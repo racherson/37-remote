@@ -27,7 +27,7 @@ plays, returns true if valid, false otherwise
 '''
 def play(stone, point, boards):
 	board = boards[0]
-	new_board = BOARD_WRAP.place(board,stone,point)
+	new_board = BOARD_WRAP.place(copy.deepcopy(board),stone,point)
 
 	if not is_board(new_board):
 		return False
@@ -209,6 +209,6 @@ def is_capture_move(stone, point, board):
 
 
 def get_next_board(stone, point, board):
-	board = BOARD_WRAP.place(copy.deepcopy(board),stone,point)
-	new_board = capture_opponent(copy.deepcopy(board), get_opponent(stone))
+	new_board = BOARD_WRAP.place(copy.deepcopy(board),stone,point)
+	new_board = capture_opponent(copy.deepcopy(new_board), get_opponent(stone))
 	return new_board

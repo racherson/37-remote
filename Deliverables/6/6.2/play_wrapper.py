@@ -22,4 +22,4 @@ class PlayWrapper:
 		return play.is_capture_move(stone,point,board)
 
 	def get_next_board(self,stone,point,board):
-		return play.get_next_board(strone,point,board)
+		return play.get_next_board(stone,point,board)

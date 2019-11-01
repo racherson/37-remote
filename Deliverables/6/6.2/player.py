@@ -9,12 +9,12 @@ BOARD_WRAP = BoardWrapper()
 
 class Player:
 
-	name = "no name"
-	color = EMPTY
+	# name = "no name"
+	# color = EMPTY
 
 	def __init__(self):
-		name = "no name"
-		color = EMPTY
+		self.name = "no name"
+		self.color = EMPTY
 
 	def set_name(self,name):
 		self.name = name

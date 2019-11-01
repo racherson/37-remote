@@ -2,6 +2,8 @@ BOARD_SIZE = 19
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
+EMPTY_BOARD = [[EMPTY for i in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
+PASS = "pass"
 
 '''
 GET_OPPONENT
