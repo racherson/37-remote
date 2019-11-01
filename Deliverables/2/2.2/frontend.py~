@@ -1,0 +1,11 @@
+import sys
+import json
+import backend
+
+lst = []
+for line in sys.stdin:
+	l = json.loads(line.strip())
+	lst.append(l)
+	
+lst = backend.sort(json.dumps(lst))
+print(lst)
