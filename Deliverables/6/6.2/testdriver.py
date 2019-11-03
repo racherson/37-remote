@@ -47,16 +47,19 @@ lines = decode_stacked(s)
 
 counter = 0
 players = []
+most_recent_boards = [EMPTY_BOARD]
 for line in lines:
     if counter == 0:
         players.append(line)
     elif counter == 1:
         players.append(line)
         REF_WRAP.set_players(players[0], players[1])
-        ls.append([EMPTY_BOARD])
+        # ls.append([EMPTY_BOARD])
     else:
+        ls.append(most_recent_boards)
         new_boards = REF_WRAP.make_action(line)
-        ls.append(new_boards)
+        # ls.append(new_boards)
+        most_recent_boards = new_boards
         if isinstance(new_boards[0], str):
             break
     counter += 1
