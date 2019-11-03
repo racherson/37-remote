@@ -24,6 +24,7 @@ class Referee:
 		PLAYER1_WRAP.receive_stones(BLACK)
 		PLAYER2_WRAP.set_name(name2)
 		PLAYER2_WRAP.receive_stones(WHITE)
+		return PLAYER1_WRAP.get_color(), PLAYER2_WRAP.get_color()
 
 	def make_action(self, action):
 		if action == PASS:

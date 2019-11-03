@@ -28,7 +28,7 @@ s = ""
 for line in sys.stdin:
 	s += line
 
-ls = ["B","W"]
+ls = []
 counter = 0
 players = []
 most_recent_boards = [EMPTY_BOARD]
@@ -37,7 +37,9 @@ for line in decode_stacked(s):
         players.append(line)
     elif counter == 1:
         players.append(line)
-        REF_WRAP.set_players(players[0], players[1])
+        color1, color2 = REF_WRAP.set_players(players[0], players[1])
+        ls.append(color1)
+        ls.append(color2)
     else:
         ls.append(most_recent_boards)
         new_boards = REF_WRAP.make_action(line)
