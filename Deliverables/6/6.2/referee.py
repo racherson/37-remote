@@ -36,6 +36,7 @@ class Referee:
 			self.change_current_turn()
 			return self.boards 
 
+		self.num_passes = 0
 		point = action
 		if not PLAY_WRAP.action([self.get_current_stone(), [point, self.boards]]):
 			illegal_move = True
