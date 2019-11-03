@@ -53,6 +53,7 @@ for line in lines:
     elif counter == 1:
         players.append(line)
         REF_WRAP.set_players(players[0], players[1])
+        ls.append([EMPTY_BOARD])
     else:
         new_boards = REF_WRAP.make_action(line)
         ls.append(new_boards)
