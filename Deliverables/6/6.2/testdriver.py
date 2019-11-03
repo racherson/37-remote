@@ -45,6 +45,7 @@ for line in decode_stacked(s):
         new_boards = REF_WRAP.make_action(line)
         most_recent_boards = new_boards
         if isinstance(new_boards[0], str):
+            ls.append(new_boards)
             break
     counter += 1
 
