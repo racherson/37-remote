@@ -74,7 +74,7 @@ class BoardWrapper:
 	converts input str "x-y" to int list [y, x] 
 	'''
 	def string_to_point(self,point):
-		if isinstance(point,str) or isinstance(point,unicode):
+		if isinstance(point,str):
 			str_arr = point.split("-")
 			int_arr = [int(coord) for coord in str_arr]
 			return [int_arr[1]-1, int_arr[0]-1]
