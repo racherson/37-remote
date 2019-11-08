@@ -30,16 +30,17 @@ class RemotePlayerWrapper:
         return self.get_socket_response()
 
     def receive_stones(self, stone):
-        if self.receive_flag:
-            self.receive_flag = True
-            self.sock.connect((self.config_data["IP"], self.config_data["port"]))
-            self.sock.send(pickle.dumps(["receive-stones", stone]))
-            return self.get_socket_response()
-        return "GO has gone crazy!"
+        if self.receive_flag or not self.register_flag:
+            return "GO has gone crazy!"
+        self.receive_flag = True
+        # self.sock.connect((self.config_data["IP"], self.config_data["port"]))
+        self.sock.send(pickle.dumps(["receive-stones", stone]))
+        response = self.get_socket_response()
+        return response
 
     def make_a_move(self, boards):
         if self.receive_flag and self.register_flag:
-            self.sock.connect((self.config_data["IP"], self.config_data["port"]))
+            # self.sock.connect((self.config_data["IP"], self.config_data["port"]))
             self.sock.send(pickle.dumps(["make-a-move", boards]))
             return self.get_socket_response()
         return "GO has gone crazy!"
