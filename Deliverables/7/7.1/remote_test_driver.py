@@ -23,17 +23,9 @@ def get_response(request):
 PLAYER_WRAP = Player_Wrapper()
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
-sock.bind((config["IP"], config["port"]))
-sock.listen(5)
+sock.connect((config["IP"], config["port"]))
 
+sock.send(pickle.dumps("establish connection"))
 while True:
-    # receives data from client socket
-    acceptSocket, address = sock.accept()
-    request_data = acceptSocket.recv(1024)
-    request = pickle.loads(request_data)
-
-    # sends response generated from request and closes client socket
-    acceptSocket.send(pickle.dumps(get_response(request)))
-    acceptSocket.close()
-
-sock.close()
+    request = pickle.loads(sock.recv(4096))
+    sock.send(pickle.dumps(get_response(request)))

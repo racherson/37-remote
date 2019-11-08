@@ -12,35 +12,39 @@ def get_config():
 
 class RemotePlayerWrapper:
     def __init__(self):
-        self.config_data = get_config()
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # shadow states
         self.register_flag = False
         self.receive_flag = False
+        # establish connection
+        self.config_data = get_config()
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind((self.config_data["IP"], self.config_data["port"]))
+        self.sock.listen(5)
+        self.accept_socket, address = self.sock.accept()
+        _ = self.receive_request()
 
-    def get_socket_response(self):
-        return pickle.loads(self.sock.recv(2048))
+    def receive_request(self):
+        # receives data from client socket
+        data = self.accept_socket.recv(1024)
+        request = pickle.loads(data)
+        return request
 
     def register(self):
         if self.register_flag:
             return "GO has gone crazy!"
         self.register_flag = True
-        self.sock.connect((self.config_data["IP"], self.config_data["port"]))
-        self.sock.send(pickle.dumps(["register"]))
-        return self.get_socket_response()
+        self.accept_socket.send(pickle.dumps(["register"]))
+        return self.receive_request()
 
     def receive_stones(self, stone):
         if self.receive_flag or not self.register_flag:
             return "GO has gone crazy!"
         self.receive_flag = True
-        # self.sock.connect((self.config_data["IP"], self.config_data["port"]))
-        self.sock.send(pickle.dumps(["receive-stones", stone]))
-        response = self.get_socket_response()
-        return response
+        self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
+        return self.receive_request()
 
     def make_a_move(self, boards):
         if self.receive_flag and self.register_flag:
-            # self.sock.connect((self.config_data["IP"], self.config_data["port"]))
-            self.sock.send(pickle.dumps(["make-a-move", boards]))
-            return self.get_socket_response()
+            self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
+            return self.receive_request()
         return "GO has gone crazy!"

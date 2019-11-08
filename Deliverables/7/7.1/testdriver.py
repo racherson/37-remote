@@ -2,6 +2,7 @@ import sys
 import json
 from json import JSONDecoder, JSONDecodeError
 import re
+import pickle
 import remote_player_wrapper
 
 player_wrap = remote_player_wrapper.RemotePlayerWrapper()
@@ -10,6 +11,12 @@ NOT_WHITESPACE = re.compile(r'[^\s]')
 
 def point_to_string(point):
     return str(point[1]+1) + "-" + str(point[0]+1)
+
+
+def check_for_crazy(response):
+    if response == "GO has gone crazy!":
+        return True
+    return False
 
 
 def decode_stacked(document, pos=0, decoder=JSONDecoder()):
@@ -35,17 +42,25 @@ ls = []
 for line in decode_stacked(s):
     if len(line) == 1:
         if line[0] == "register":
-            ls.append(player_wrap.register())
+            response = player_wrap.register()
+            ls.append(response)
+            if check_for_crazy(response):
+                break
             continue
     elif len(line) == 2:
         if line[0] == "receive-stones":
-            player_wrap.receive_stones(line[1])
+            response = player_wrap.receive_stones(line[1])
+            if check_for_crazy(response):
+                ls.append(response)
+                break
         elif line[0] == "make-a-move":
             output = player_wrap.make_a_move(line[1])
             if len(output) == 2:
                 ls.append(point_to_string(output))
             else:
                 ls.append(output)
+                if check_for_crazy(output):
+                    break
     else:
         raise Exception("Invalid Input")
 
