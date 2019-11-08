@@ -2,10 +2,9 @@ import sys
 import json
 from json import JSONDecoder, JSONDecodeError
 import re
-import play_wrapper
-from game import Game
+import remote_player_wrapper
 
-play_wrap = play_wrapper.PlayWrapper()
+player_wrap = remote_player_wrapper.RemotePlayerWrapper()
 NOT_WHITESPACE = re.compile(r'[^\s]')
 
 
@@ -33,18 +32,16 @@ for line in sys.stdin:
 
 ls = []
 
-gameplay = Game()
-
 for line in decode_stacked(s):
     if len(line) == 1:
         if line[0] == "register":
-            ls.append(gameplay.register())
+            ls.append(player_wrap.register())
             continue
     elif len(line) == 2:
         if line[0] == "receive-stones":
-            gameplay.receive_stones(line[1])
+            player_wrap.receive_stones(line[1])
         elif line[0] == "make-a-move":
-            output = gameplay.make_a_move(line[1])
+            output = player_wrap.make_a_move(line[1])
             if len(output) == 2:
                 ls.append(point_to_string(output))
             else:
@@ -52,5 +49,5 @@ for line in decode_stacked(s):
     else:
         raise Exception("Invalid Input")
 
-
+player_wrap.sock.close()
 print(json.dumps(ls, separators=(',', ':')))

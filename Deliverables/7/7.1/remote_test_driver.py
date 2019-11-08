@@ -1,5 +1,6 @@
 import socket
 import json
+import pickle
 from player_wrapper import Player_Wrapper
 
 
@@ -23,14 +24,16 @@ PLAYER_WRAP = Player_Wrapper()
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 sock.bind((config["IP"], config["port"]))
+sock.listen(5)
 
 while True:
     # receives data from client socket
     acceptSocket, address = sock.accept()
-    request = sock.recv(1024)
+    request_data = acceptSocket.recv(1024)
+    request = pickle.loads(request_data)
 
     # sends response generated from request and closes client socket
-    acceptSocket.send(get_response(request))
+    acceptSocket.send(pickle.dumps(get_response(request)))
     acceptSocket.close()
 
 sock.close()
