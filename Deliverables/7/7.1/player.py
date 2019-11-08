@@ -3,6 +3,7 @@ from play_wrapper import PlayWrapper
 from board_wrapper import BoardWrapper
 from abc import abstractmethod
 import copy
+import json
 
 PLAY_WRAP = PlayWrapper()
 BOARD_WRAP = BoardWrapper()
@@ -17,20 +18,20 @@ class Player:
 		self.name = "no name"
 		self.color = EMPTY
 
-	def set_name(self,name):
+	def set_name(self, name):
 		self.name = name
 
 	def get_name(self):
 		return self.name
 
-	def set_color(self,color):
+	def set_color(self, color):
 		self.color = color
 
 	def get_color(self):
 		return self.color
 
 	@abstractmethod
-	def make_a_move(self,boards):
+	def make_a_move(self, boards):
 		pass
 
 
@@ -38,7 +39,7 @@ class Player1(Player):
 	def __init__(self):
 		super(Player1, self).__init__()
 
-	def make_a_move(self,boards):
+	def make_a_move(self, boards):
 		history_is_good = PLAY_WRAP.check_history(boards, self.color)
 		if history_is_good:
 			for col in range(BOARD_SIZE):
@@ -52,13 +53,14 @@ class Player1(Player):
 
 class Player2(Player):
 
-	n = 1
-
-	def __init__(self, n=1):
+	def __init__(self):
 		super(Player2, self).__init__()
-		self.n = n
+		self.n = None
+		with open('go-player.config') as config_file:
+			n = json.load(config_file)
+		self.n = n["depth"]
 
-	def make_a_move(self,boards):
+	def make_a_move(self, boards):
 		history_is_good = PLAY_WRAP.check_history(boards, self.color)
 		if not history_is_good:
 			return "This history makes no sense!"
