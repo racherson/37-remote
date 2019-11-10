@@ -28,4 +28,7 @@ sock.connect((config["IP"], config["port"]))
 sock.send(pickle.dumps("establish connection"))
 while True:
     request = pickle.loads(sock.recv(4096))
+    if request == "close":
+        break
     sock.send(pickle.dumps(get_response(request)))
+sock.close()

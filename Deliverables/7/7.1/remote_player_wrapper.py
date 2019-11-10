@@ -48,3 +48,6 @@ class RemotePlayerWrapper:
             self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
             return self.receive_request()
         return "GO has gone crazy!"
+
+    def close(self):
+        self.accept_socket.send(pickle.dumps("close"))

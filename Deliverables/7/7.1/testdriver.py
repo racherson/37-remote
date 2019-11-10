@@ -2,7 +2,6 @@ import sys
 import json
 from json import JSONDecoder, JSONDecodeError
 import re
-import pickle
 import remote_player_wrapper
 
 player_wrap = remote_player_wrapper.RemotePlayerWrapper()
@@ -64,5 +63,6 @@ for line in decode_stacked(s):
     else:
         raise Exception("Invalid Input")
 
+player_wrap.close()
 player_wrap.sock.close()
 print(json.dumps(ls, separators=(',', ':')))
