@@ -20,18 +20,17 @@ def get_response(request):
     raise Exception("Invalid request")
 
 
-# def try_to_connect(config):
-#     try:
-#         sock.connect((config["IP"], config["port"]))
-#     except Exception:
-#         try_to_connect(config)
+def try_to_connect(config):
+    try:
+        sock.connect((config["IP"], config["port"]))
+    except Exception:
+        try_to_connect(config)
 
 
 PLAYER_WRAP = Player_Wrapper()
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
-# try_to_connect(config)
-sock.connect((config["IP"], config["port"]))
+try_to_connect(config)
 
 sock.send(pickle.dumps("establish connection"))
 while True:
