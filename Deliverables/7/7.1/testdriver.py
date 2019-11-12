@@ -6,7 +6,7 @@ import remote_player_wrapper
 
 player_wrap = remote_player_wrapper.RemotePlayerWrapper()
 NOT_WHITESPACE = re.compile(r'[^\s]')
-
+GONE_CRAZY = "GO has gone crazy!"
 
 def point_to_string(point):
     return str(point[1]+1) + "-" + str(point[0]+1)
@@ -61,6 +61,7 @@ for line in decode_stacked(s):
                 if check_for_crazy(output):
                     break
     else:
+        ls.append(GONE_CRAZY)
         raise Exception("Invalid Input")
 
 player_wrap.close()
