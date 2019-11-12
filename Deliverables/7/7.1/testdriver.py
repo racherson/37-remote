@@ -40,9 +40,13 @@ ls = []
 for line in decode_stacked(s):
     if len(line) == 1:
         if line[0] == "register":
-            response = player_wrap.register()
-            ls.append(response)
-            continue
+            try:
+                response = player_wrap.register()
+                ls.append(response)
+            # continue
+            except:
+                response = GONE_CRAZY
+                ls.append(response)
         else:
             response = GONE_CRAZY
             ls.append(response)
@@ -51,8 +55,12 @@ for line in decode_stacked(s):
 
     elif len(line) == 2:
         if line[0] == "receive-stones":
-            response = player_wrap.receive_stones(line[1])
-            if response:
+            try:
+                response = player_wrap.receive_stones(line[1])
+                if response:
+                    ls.append(response)
+            except:
+                respnse = GONE_CRAZY
                 ls.append(response)
         elif line[0] == "make-a-move":
             try:
