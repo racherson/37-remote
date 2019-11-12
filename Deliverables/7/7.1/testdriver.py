@@ -30,10 +30,12 @@ def decode_stacked(document, pos=0, decoder=JSONDecoder()):
             raise Exception("Can't parse")
         yield obj
 
-
 s = ""
 for line in sys.stdin:
     s += line
+
+# for line in decode_stacked(s):
+#     print(line)
 
 ls = []
 
