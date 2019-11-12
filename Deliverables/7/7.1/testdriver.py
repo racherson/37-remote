@@ -55,10 +55,14 @@ for line in decode_stacked(s):
             if response:
                 ls.append(response)
         elif line[0] == "make-a-move":
-            response = player_wrap.make_a_move(line[1])
-            if len(response) == 2:
-                ls.append(point_to_string(response))
-            else:
+            try:
+                response = player_wrap.make_a_move(line[1])
+                if len(response) == 2:
+                    ls.append(point_to_string(response))
+                else:
+                    ls.append(response)
+            except:
+                response = GONE_CRAZY
                 ls.append(response)
         else:
             response = GONE_CRAZY
