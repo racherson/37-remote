@@ -1,6 +1,7 @@
 from helpers import *
 from play_wrapper import PlayWrapper
 from player_wrapper import Player_Wrapper
+from ref_wrapper import Ref_Wrapper
 
 PLAY_WRAP = PlayWrapper()
 PLAYER1_WRAP = Player_Wrapper()
@@ -11,6 +12,7 @@ class Referee:
 		self.boards = [EMPTY_BOARD]
 		self.current_turn = None
 		self.num_passes = 0
+		self.REF_WRAP = Ref_Wrapper(self)
 
 
 	def get_boards(self):
@@ -31,8 +33,8 @@ class Referee:
 			self.num_passes += 1
 			if self.num_passes == 2:
 				illegal_move = False
-				return self.get_winner(illegal_move)
-			self.update_boards(self.boards[0])
+				return self.REF_WRAP.get_winner(illegal_move)
+			self.REF_WRAP.update_boards(self.boards[0])
 			self.change_current_turn()
 			return self.boards 
 
@@ -40,9 +42,9 @@ class Referee:
 		point = action
 		if not PLAY_WRAP.action([self.get_current_stone(), [point, self.boards]]):
 			illegal_move = True
-			return self.get_winner(illegal_move)
+			return self.REF_WRAP.get_winner(illegal_move)
 		new_board = PLAY_WRAP.get_next_board(self.get_current_stone(), point, self.boards[0])
-		self.update_boards(new_board)
+		self.REF_WRAP.update_boards(new_board)
 		self.change_current_turn()
 		return self.boards
 
