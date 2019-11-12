@@ -8,6 +8,7 @@ player_wrap = remote_player_wrapper.RemotePlayerWrapper()
 NOT_WHITESPACE = re.compile(r'[^\s]')
 GONE_CRAZY = "GO has gone crazy!"
 
+
 def point_to_string(point):
     return str(point[1]+1) + "-" + str(point[0]+1)
 
@@ -16,6 +17,7 @@ def check_for_crazy(response):
     if response == "GO has gone crazy!":
         return True
     return False
+
 
 def decode_stacked(document, pos=0, decoder=JSONDecoder()):
     while True:
@@ -30,12 +32,14 @@ def decode_stacked(document, pos=0, decoder=JSONDecoder()):
             raise Exception("Can't parse")
         yield obj
 
+
 s = ""
 for line in sys.stdin:
     s += line
 
 # for line in decode_stacked(s):
 #     print(line)
+# another comment
 
 ls = []
 
@@ -62,7 +66,7 @@ for line in decode_stacked(s):
                 if response:
                     ls.append(response)
             except:
-                respnse = GONE_CRAZY
+                response = GONE_CRAZY
                 ls.append(response)
         elif line[0] == "make-a-move":
             try:
@@ -82,7 +86,8 @@ for line in decode_stacked(s):
             break
 
     else:
-        end_if_crazy(ls)
+        response = GONE_CRAZY
+        ls.append(response)
 
 player_wrap.close()
 player_wrap.sock.close()
