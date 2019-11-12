@@ -124,10 +124,17 @@ def check_turn(stone, old_board, new_board):
 	points_old = BOARD_WRAP.get_points(old_board, stone)
 	points_new = BOARD_WRAP.get_points(new_board, stone)
 
+	# opponent_old = BOARD_WRAP.get_points(old_board,get_opponent(stone))
+	# intersection = [el for el in points_new if el in opponent_old]
+	# if len(intersection) != 0:
+	# 	return False
+
 	if len(points_old) == len(points_new) - 1:
 		new_point = list(set(points_new)-set(points_old))[0]
 		cpy = copy.deepcopy(old_board)
 		moved_board = BOARD_WRAP.place(cpy, stone, new_point)
+		if isinstance(moved_board, str):
+			return False
 
 		moved_board = capture_opponent(moved_board, get_opponent(stone))
 
