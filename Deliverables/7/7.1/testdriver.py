@@ -17,11 +17,6 @@ def check_for_crazy(response):
         return True
     return False
 
-def end_if_crazy(ls):
-    ls.append(GONE_CRAZY)
-    raise Exception("Invalid Input")
-
-
 def decode_stacked(document, pos=0, decoder=JSONDecoder()):
     while True:
         match = NOT_WHITESPACE.search(document, pos)
@@ -47,27 +42,31 @@ for line in decode_stacked(s):
         if line[0] == "register":
             response = player_wrap.register()
             ls.append(response)
-            if check_for_crazy(response):
-                break
             continue
         else:
-            end_if_crazy(ls)
+            response = GONE_CRAZY
+            ls.append(response)
+        if check_for_crazy(response):
+            break
+
     elif len(line) == 2:
         if line[0] == "receive-stones":
             response = player_wrap.receive_stones(line[1])
-            if check_for_crazy(response):
-                ls.append(response)
-                break
+            ls.append(response)
         elif line[0] == "make-a-move":
-            output = player_wrap.make_a_move(line[1])
-            if len(output) == 2:
-                ls.append(point_to_string(output))
+            response = player_wrap.make_a_move(line[1])
+            if len(response) == 2:
+                ls.append(point_to_string(response))
             else:
-                ls.append(output)
-                if check_for_crazy(output):
-                    break
+                response = GONE_CRAZY
+                ls.append(response)
         else:
-            end_if_crazy(ls)
+            response = GONE_CRAZY
+            ls.append(response)
+
+        if check_for_crazy(response):
+            break
+
     else:
         end_if_crazy(ls)
 
