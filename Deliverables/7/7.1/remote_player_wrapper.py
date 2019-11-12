@@ -3,6 +3,7 @@ import socket
 import json
 import pickle
 
+GONE_CRAZY = "GO has gone crazy!"
 
 def get_config():
     with open('go.config') as config_file:
@@ -31,23 +32,25 @@ class RemotePlayerWrapper:
 
     def register(self):
         if self.register_flag:
-            return "GO has gone crazy!"
+            return GONE_CRAZY
         self.register_flag = True
         self.accept_socket.send(pickle.dumps(["register"]))
         return self.receive_request()
 
     def receive_stones(self, stone):
         if self.receive_flag or not self.register_flag:
-            return "GO has gone crazy!"
+            return GONE_CRAZY
         self.receive_flag = True
         self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
         return self.receive_request()
 
     def make_a_move(self, boards):
         if self.receive_flag and self.register_flag:
+            if len(boards) > 3:
+                return GONE_CRAZY
             self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
             return self.receive_request()
-        return "GO has gone crazy!"
+        return GONE_CRAZY
 
     def close(self):
         self.accept_socket.send(pickle.dumps("close"))

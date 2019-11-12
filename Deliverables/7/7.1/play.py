@@ -83,8 +83,6 @@ def check_history(boards, stone):
 
 		if not check_turn(stone, boards[2], boards[1]) or not check_turn(get_opponent(stone), boards[1], boards[0]):
 			return False
-	if len(boards) > 3:
-		return False
 
 	return True
 
