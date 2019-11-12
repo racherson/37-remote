@@ -52,13 +52,13 @@ for line in decode_stacked(s):
     elif len(line) == 2:
         if line[0] == "receive-stones":
             response = player_wrap.receive_stones(line[1])
-            ls.append(response)
+            if response:
+                ls.append(response)
         elif line[0] == "make-a-move":
             response = player_wrap.make_a_move(line[1])
             if len(response) == 2:
                 ls.append(point_to_string(response))
             else:
-                response = GONE_CRAZY
                 ls.append(response)
         else:
             response = GONE_CRAZY
