@@ -88,6 +88,8 @@ for line in decode_stacked(s):
     else:
         response = GONE_CRAZY
         ls.append(response)
+        if check_for_crazy(response):
+            break
 
 player_wrap.close()
 player_wrap.sock.close()
