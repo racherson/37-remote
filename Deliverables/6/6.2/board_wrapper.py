@@ -76,6 +76,9 @@ class BoardWrapper:
 	def string_to_point(self,point):
 		if isinstance(point,str):
 			str_arr = point.split("-")
+			for num in str_arr:
+				if not num.isnumeric():
+					raise Exception("Point is invalid")
 			int_arr = [int(coord) for coord in str_arr]
 			return [int_arr[1]-1, int_arr[0]-1]
 		return point
