@@ -72,6 +72,8 @@ def check_history(boards, stone):
 		return len(BOARD_WRAP.get_points(boards[0], WHITE)) == 0 and len(BOARD_WRAP.get_points(boards[0], BLACK)) <= 1
 
 	if len(boards) == 3:
+		if not check_valid_board(boards[2]):
+			return False
 		if boards[0] == boards[1] == boards[2] or boards[0] == boards[2]:
 			return False
 
@@ -159,6 +161,14 @@ def is_suicide(board, stone):
 			return True
 	return False
 
+
+def check_valid_board(board):
+	for row in range(BOARD_SIZE):
+		for col in range(BOARD_SIZE):
+			if board[row][col] == BLACK or board[row][col] == WHITE:
+				if has_no_liberties(board, [row, col]):
+					return False
+	return True
 
 '''
 GET_CAPTURED
