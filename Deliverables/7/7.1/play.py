@@ -72,12 +72,9 @@ def check_history(boards, stone):
 		return len(BOARD_WRAP.get_points(boards[0], WHITE)) == 0 and len(BOARD_WRAP.get_points(boards[0], BLACK)) <= 1
 
 	if len(boards) == 3:
-<<<<<<< HEAD
 		if not check_valid_board(boards[2]):
 			return False
 
-=======
->>>>>>> parent of acca3f7... added check valid first board
 		if boards[0] == boards[1] == boards[2] or boards[0] == boards[2]:
 			return False
 
@@ -173,6 +170,7 @@ def check_valid_board(board):
 				if has_no_liberties(board, [row, col]):
 					return False
 	return True
+
 
 '''
 GET_CAPTURED
