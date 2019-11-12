@@ -178,14 +178,11 @@ expects board and returns true if board is possible (no stones that should have 
 false otherwise
 '''
 def check_valid_board(board):
-	b = BOARD_WRAP.get_points(board,BLACK)
-	w = BOARD_WRAP.get_points(board,WHITE)
-	points = b + w
-
-	for point in points:
-		if has_no_liberties(board,point):
-			return False
-
+	for row in range(BOARD_SIZE):
+		for col in range(BOARD_SIZE):
+			if board[row][col] == BLACK or board[row][col] == WHITE:
+				 if has_no_liberties(board,[row,col]):
+				 	return False
 	return True
 
 
