@@ -2,10 +2,12 @@ import sys
 import json
 from json import JSONDecoder
 import re
+from referee import Referee
 from ref_wrapper import Ref_Wrapper
 from helpers import *
 
-REF_WRAP = Ref_Wrapper()
+REF = Referee()
+REF_WRAP = Ref_Wrapper(REF)
 NOT_WHITESPACE = re.compile(r'[^\s]')
 
 def point_to_string(point):
