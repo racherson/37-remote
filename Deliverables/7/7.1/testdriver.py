@@ -2,6 +2,7 @@ import sys
 import json
 from json import JSONDecoder, JSONDecodeError
 import re
+from streamy import stream
 import remote_player_wrapper
 
 player_wrap = remote_player_wrapper.RemotePlayerWrapper()
@@ -33,17 +34,23 @@ def decode_stacked(document, pos=0, decoder=JSONDecoder()):
         yield obj
 
 
-s = ""
-for line in sys.stdin:
-    s += line
+# s = ""
+# for line in sys.stdin:
+#     s += line
 
 # for line in decode_stacked(s):
 #     print(line)
 # another comment
 
 ls = []
+file_contents = ""  # read in all json objects to a string
+special_json = sys.stdin.readline()
+while special_json:
+    file_contents += special_json
+    special_json = sys.stdin.readline()
+lst = list(stream(file_contents))  # parse json objects
 
-for line in decode_stacked(s):
+for line in lst:
     if len(line) == 1:
         if line[0] == "register":
             try:
