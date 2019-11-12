@@ -1,4 +1,5 @@
 from helpers import *
+from testdriver import point_to_string
 
 
 def occupied(board, point):
@@ -54,6 +55,7 @@ def get_points(board, maybe_stone):
 	for i in range(0, BOARD_SIZE):
 		for j in range(0, BOARD_SIZE):
 			if board[j][i] == maybe_stone:
+				# points.append(point_to_string([j,i]))
 				points.append(str(i+1)+"-"+str(j+1))
 	points.sort()
 	return points

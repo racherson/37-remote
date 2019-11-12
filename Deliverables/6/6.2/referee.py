@@ -13,8 +13,8 @@ class Referee:
 		self.num_passes = 0
 
 
-	def get_boards(self):
-		return self.boards
+	# def get_boards(self):
+	# 	return self.boards
 
 	def set_players(self,name1,name2):
 		self.current_turn = PLAYER1_WRAP
@@ -26,6 +26,9 @@ class Referee:
 		PLAYER2_WRAP.receive_stones(WHITE)
 		return PLAYER1_WRAP.get_color(), PLAYER2_WRAP.get_color()
 
+	def reset_passes(self):
+		self.num_passes = 0
+
 	def make_action(self, action):
 		if action == PASS:
 			self.num_passes += 1
@@ -36,7 +39,7 @@ class Referee:
 			self.change_current_turn()
 			return self.boards 
 
-		self.num_passes = 0
+		self.reset_passes()
 		point = action
 		if not PLAY_WRAP.action([self.get_current_stone(), [point, self.boards]]):
 			illegal_move = True
@@ -66,8 +69,6 @@ class Referee:
 
 		winner = max(score,key=score.get)
 		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()]
-
-
 
 	def get_current_stone(self):
 		return self.current_turn.get_color()
