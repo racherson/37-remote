@@ -92,9 +92,6 @@ def check_history(boards, stone):
 		return len(BOARD_WRAP.get_points(boards[0],WHITE)) == 0 and len(BOARD_WRAP.get_points(boards[0],BLACK)) <= 1
 
 	if len(boards) == 3:
-		if not check_valid_board(boards[2]):
-			return False
-		
 		if boards[0] == boards[1] == boards[2] or boards[0] == boards[2]:
 			return False
 
@@ -171,23 +168,6 @@ def check_turn(stone, old_board, new_board):
 
 		return moved_board == new_board
 	return False
-
-'''
-CHECK_VALID_BOARD
-expects board and returns true if board is possible (no stones that should have been captured),
-false otherwise
-'''
-def check_valid_board(board):
-	b = BOARD_WRAP.get_points(board,BLACK)
-	w = BOARD_WRAP.get_points(board,WHITE)
-	points = b + w
-
-	for point in points:
-		if has_no_liberties(board,point):
-			return False
-
-	return True
-
 
 '''
 CAPTURE_OPPONENT
