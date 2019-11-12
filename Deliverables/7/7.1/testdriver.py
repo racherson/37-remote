@@ -17,6 +17,10 @@ def check_for_crazy(response):
         return True
     return False
 
+def end_if_crazy(ls):
+    ls.append(GONE_CRAZY)
+    raise Exception("Invalid Input")
+
 
 def decode_stacked(document, pos=0, decoder=JSONDecoder()):
     while True:
@@ -46,6 +50,8 @@ for line in decode_stacked(s):
             if check_for_crazy(response):
                 break
             continue
+        else:
+            end_if_crazy(ls)
     elif len(line) == 2:
         if line[0] == "receive-stones":
             response = player_wrap.receive_stones(line[1])
@@ -60,9 +66,10 @@ for line in decode_stacked(s):
                 ls.append(output)
                 if check_for_crazy(output):
                     break
+        else:
+            end_if_crazy(ls)
     else:
-        ls.append(GONE_CRAZY)
-        raise Exception("Invalid Input")
+        end_if_crazy(ls)
 
 player_wrap.close()
 player_wrap.sock.close()
