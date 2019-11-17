@@ -1,32 +1,43 @@
 from helpers import *
 from play_wrapper import PlayWrapper
-from player_wrapper import Player_Wrapper
 from ref_wrapper import Ref_Wrapper
 
 PLAY_WRAP = PlayWrapper()
-PLAYER1_WRAP = Player_Wrapper()
-PLAYER2_WRAP = Player_Wrapper()
+
 
 class Referee:
-	def __init__(self):
+	def __init__(self, remote_player, default_player):
 		self.boards = [EMPTY_BOARD]
 		self.current_turn = None
 		self.num_passes = 0
 		self.REF_WRAP = Ref_Wrapper(self)
-
+		self.PLAYER1_WRAP = remote_player
+		self.PLAYER2_WRAP = default_player
 
 	def get_boards(self):
 		return self.boards
 
-	def set_players(self,name1,name2):
-		self.current_turn = PLAYER1_WRAP
-		PLAYER1_WRAP.register()
-		PLAYER2_WRAP.register()
-		PLAYER1_WRAP.set_name(name1)
-		PLAYER1_WRAP.receive_stones(BLACK)
-		PLAYER2_WRAP.set_name(name2)
-		PLAYER2_WRAP.receive_stones(WHITE)
-		return PLAYER1_WRAP.get_color(), PLAYER2_WRAP.get_color()
+	def get_action(self):
+		return self.current_turn.make_a_move(self.boards)
+
+	def play_game(self, name1, name2):
+		players = self.set_players(name1, name2)
+		if len(players) != 2:  # crazy
+			return players
+		while True:
+			action = self.get_action()
+			action_made = self.make_action(action)
+			if isinstance(action_made, str):
+				return action_made
+
+	def set_players(self, name1, name2):
+		self.current_turn = self.PLAYER1_WRAP
+		self.PLAYER1_WRAP.set_name(name1)
+		if self.PLAYER1_WRAP.receive_stones(BLACK):
+			return self.get_winner(True)
+		self.PLAYER2_WRAP.set_name(name2)
+		self.PLAYER2_WRAP.receive_stones(WHITE)
+		return self.PLAYER1_WRAP.get_color(), self.PLAYER2_WRAP.get_color()
 
 	def make_action(self, action):
 		if action == PASS:
@@ -48,7 +59,6 @@ class Referee:
 		self.change_current_turn()
 		return self.boards
 
-
 	def update_boards(self, new_board):
 		boards = self.boards
 		boards = [new_board] + boards
@@ -64,18 +74,16 @@ class Referee:
 
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
-			return sorted([PLAYER1_WRAP.get_name(), PLAYER2_WRAP.get_name()])
+			return sorted([self.PLAYER1_WRAP.get_name(), self.PLAYER2_WRAP.get_name()])
 
-		winner = max(score,key=score.get)
+		winner = max(score, key=score.get)
 		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()]
-
-
 
 	def get_current_stone(self):
 		return self.current_turn.get_color()
 
 	def get_opponent_player(self):
-		return PLAYER2_WRAP if self.current_turn == PLAYER1_WRAP else PLAYER1_WRAP
+		return self.PLAYER2_WRAP if self.current_turn == self.PLAYER1_WRAP else self.PLAYER1_WRAP
 
 	def change_current_turn(self):
 		self.current_turn = self.get_opponent_player()
