@@ -4,6 +4,7 @@ from board_wrapper import BoardWrapper
 from abc import abstractmethod
 import copy
 import json
+import random
 
 PLAY_WRAP = PlayWrapper()
 BOARD_WRAP = BoardWrapper()
@@ -82,3 +83,27 @@ class Player2(Player):
 				if PLAY_WRAP.play(self.color, [row, col], boards):
 					return [row, col]
 		return "pass"
+
+class Player3(Player):
+
+	def __init__(self):
+		super(Player3, self).__init__()
+
+	def make_a_move(self, boards):
+		row = random.randint(0,19)
+		if row == 19:
+			return PASS
+		col = random.randint(0,18)
+		return [row,col]
+
+
+
+
+
+
+
+
+
+
+
+
