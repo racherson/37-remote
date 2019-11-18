@@ -26,7 +26,7 @@ class RemotePlayerWrapper:
         _ = self.receive_request()
 
     def get_name(self):
-        return "no name"
+        return "remote"
 
     def get_color(self):
         return BLACK

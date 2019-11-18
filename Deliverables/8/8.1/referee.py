@@ -36,7 +36,6 @@ class Referee:
 			action = self.get_action()
 			if isinstance(action[0], str) and len(action) < 3:
 				return action
-			print(action)
 			action_made = self.make_action(action)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
 				return action_made
