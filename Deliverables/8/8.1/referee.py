@@ -18,7 +18,14 @@ class Referee:
 		return self.boards
 
 	def get_action(self):
-		return self.current_turn.make_a_move(self.boards)
+		if self.current_turn == self.PLAYER1_WRAP:
+			try:
+				move = self.current_turn.make_a_move(self.boards)
+				return move
+			except:
+				return self.get_winner(True)
+		move = self.current_turn.make_a_move(self.boards)
+		return move
 
 	def play_game(self, name1, name2):
 		players = self.set_players(name1, name2)
@@ -26,6 +33,8 @@ class Referee:
 			return players
 		while True:
 			action = self.get_action()
+			if isinstance(action[0], str):
+				return action
 			print(action)
 			action_made = self.make_action(action)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):

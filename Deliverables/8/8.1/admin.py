@@ -1,4 +1,5 @@
 import json
+import sys
 from importlib.machinery import SourceFileLoader
 import remote_player_wrapper
 from ref_wrapper import Ref_Wrapper
@@ -17,7 +18,13 @@ defaultFile = SourceFileLoader("default_player", config_data["default-player"]).
 player1_wrap = remote_player_wrapper.RemotePlayerWrapper()
 player2_wrap = defaultFile.default_player
 
-player1_wrap.register()
+try:
+    player1_wrap.register()
+except:
+    player2_wrap.register()
+    print(json.dumps([player2_wrap.get_name()]))
+    sys.exit()
+
 player2_wrap.register()
 
 ref = Referee(player1_wrap, player2_wrap)
