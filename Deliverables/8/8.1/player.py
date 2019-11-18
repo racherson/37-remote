@@ -84,17 +84,18 @@ class Player2(Player):
 					return [row, col]
 		return "pass"
 
+
 class Player3(Player):
 
 	def __init__(self):
 		super(Player3, self).__init__()
 
 	def make_a_move(self, boards):
-		row = random.randint(0,19)
-		if row == 19:
+		row = random.randint(0, BOARD_SIZE)
+		if row == BOARD_SIZE:
 			return PASS
-		col = random.randint(0,18)
-		return [row,col]
+		col = random.randint(0, BOARD_SIZE - 1)
+		return [row, col]
 
 
 

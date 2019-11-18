@@ -2,6 +2,7 @@ import json
 from importlib.machinery import SourceFileLoader
 import remote_player_wrapper
 from ref_wrapper import Ref_Wrapper
+from referee import Referee
 
 
 def get_config():
@@ -11,19 +12,17 @@ def get_config():
 
 
 config_data = get_config()
-defaultFile = config_data["default-player"]
-foo = SourceFileLoader("default_player", "default_player.py").load_module()
-from foo.MyClass() import default_player
-
+defaultFile = SourceFileLoader("default_player", config_data["default-player"]).load_module()
 
 player1_wrap = remote_player_wrapper.RemotePlayerWrapper()
-player2_wrap = default_player
+player2_wrap = defaultFile.default_player
 
 player1_wrap.register()
 player2_wrap.register()
 
-REF_WRAP = Ref_Wrapper(player1_wrap, player2_wrap)
-winner = REF_WRAP.play_game()
+ref = Referee(player1_wrap, player2_wrap)
+REF_WRAP = Ref_Wrapper(ref)
+winner = REF_WRAP.play_game("remote", "default")
 
 player1_wrap.close()
 player1_wrap.sock.close()

@@ -1,4 +1,4 @@
-from player import Player2
+from player import Player3
 from helpers import *
 
 

@@ -26,13 +26,14 @@ class Referee:
 			return players
 		while True:
 			action = self.get_action()
+			print(action)
 			action_made = self.make_action(action)
-			if isinstance(action_made, str):
+			if isinstance(action_made, str) or isinstance(action_made[0], str):
 				return action_made
 
 	def set_players(self, name1, name2):
 		self.current_turn = self.PLAYER1_WRAP
-		self.PLAYER1_WRAP.set_name(name1)
+		# self.PLAYER1_WRAP.set_name(name1)
 		if self.PLAYER1_WRAP.receive_stones(BLACK):
 			return self.get_winner(True)
 		self.PLAYER2_WRAP.set_name(name2)

@@ -1,6 +1,5 @@
 import inner_board as b
-
-BOARD_SIZE = 19
+from helpers import *
 
 
 class BoardWrapper:

@@ -5,6 +5,7 @@ import pickle
 
 GONE_CRAZY = "GO has gone crazy!"
 
+
 def get_config():
     with open('go.config') as config_file:
         config_data = json.load(config_file)
@@ -23,6 +24,12 @@ class RemotePlayerWrapper:
         self.sock.listen(5)
         self.accept_socket, address = self.sock.accept()
         _ = self.receive_request()
+
+    def get_name(self):
+        return "no name"
+
+    def get_color(self):
+        return BLACK
 
     def receive_request(self):
         # receives data from client socket

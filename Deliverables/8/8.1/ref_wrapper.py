@@ -35,3 +35,6 @@ class Ref_Wrapper:
 		if not isinstance(illegal_move,bool):
 			raise Exception("Received invalid arg illegal_move")
 		return self.ref.get_winner(illegal_move)
+
+	def play_game(self, name1, name2):
+		return self.ref.play_game(name1, name2)
