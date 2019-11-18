@@ -4,20 +4,19 @@ from board_wrapper import BoardWrapper
 
 BOARD_WRAP = BoardWrapper()
 
-class Ref_Wrapper:
-	# def __init__(self):
-	# 	self.ref = Referee()
 
-	def __init__(self,ref):
+class Ref_Wrapper:
+
+	def __init__(self, ref):
 		self.ref = ref
 
-	def set_players(self,name1,name2):
-		if not isinstance(name1,str) or not isinstance(name2,str):
+	def set_players(self, name1, name2):
+		if not isinstance(name1, str) or not isinstance(name2, str):
 			raise Exception("Received invalid player name")
 
-		return self.ref.set_players(name1,name2)
+		return self.ref.set_players(name1, name2)
 
-	def make_action(self,action):
+	def make_action(self, action):
 		if action != PASS:
 			try:
 				action = BOARD_WRAP.string_to_point(action)
@@ -32,7 +31,7 @@ class Ref_Wrapper:
 		self.ref.update_boards(new_board)
 
 	def get_winner(self, illegal_move):
-		if not isinstance(illegal_move,bool):
+		if not isinstance(illegal_move, bool):
 			raise Exception("Received invalid arg illegal_move")
 		return self.ref.get_winner(illegal_move)
 

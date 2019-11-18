@@ -1,6 +1,7 @@
 from helpers import *
 from play_wrapper import PlayWrapper
 from ref_wrapper import Ref_Wrapper
+import socket
 
 PLAY_WRAP = PlayWrapper()
 
@@ -22,7 +23,7 @@ class Referee:
 			try:
 				move = self.current_turn.make_a_move(self.boards)
 				return move
-			except:
+			except socket.error:
 				return self.get_winner(True)
 		move = self.current_turn.make_a_move(self.boards)
 		return move
