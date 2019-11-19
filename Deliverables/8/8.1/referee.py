@@ -43,7 +43,11 @@ class Referee:
 	def set_players(self, name1, name2):
 		self.current_turn = self.PLAYER1_WRAP
 		# self.PLAYER1_WRAP.set_name(name1)
-		if self.PLAYER1_WRAP.receive_stones(BLACK):
+		try:
+			received = self.PLAYER1_WRAP.receive_stones(BLACK)
+		except socket.error:
+			return self.get_winner(True)
+		if received:
 			return self.get_winner(True)
 		self.PLAYER2_WRAP.set_name(name2)
 		self.PLAYER2_WRAP.receive_stones(WHITE)
