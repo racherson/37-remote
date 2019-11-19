@@ -23,6 +23,7 @@ class RemotePlayerWrapper:
         self.sock.bind((self.config_data["IP"], self.config_data["port"]))
         self.sock.listen(5)
         self.accept_socket, address = self.sock.accept()
+        self.accept_socket.settimeout(5)
         _ = self.receive_request()
 
     def get_name(self):
