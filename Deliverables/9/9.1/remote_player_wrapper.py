@@ -17,6 +17,7 @@ class RemotePlayerWrapper:
         # shadow states
         self.register_flag = False
         self.receive_flag = False
+        self.name = "no name"
         # establish connection
         self.config_data = get_config()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,7 +28,10 @@ class RemotePlayerWrapper:
         _ = self.receive_request()
 
     def get_name(self):
-        return "no name"
+        return self.name
+
+    def set_name(self, name):
+        self.name = name
 
     def get_color(self):
         return BLACK

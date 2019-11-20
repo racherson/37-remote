@@ -22,27 +22,27 @@ class Referee:
 		if self.current_turn == self.PLAYER1_WRAP:
 			try:
 				move = self.current_turn.make_a_move(self.boards)
-				return move
+				return move, False
 			except socket.error:
 				return self.get_winner(True)
 		move = self.current_turn.make_a_move(self.boards)
-		return move
+		return move, False
 
 	def play_game(self, name1, name2):
 		players = self.set_players(name1, name2)
 		if len(players) != 2:  # crazy
 			return players
 		while True:
-			action = self.get_action()
+			action, illegal = self.get_action()
 			if isinstance(action[0], str) and len(action) < 3:
-				return action
-			action_made = self.make_action(action)
+				return action, illegal
+			action_made, illegal = self.make_action(action)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
-				return action_made
+				return action_made, illegal
 
 	def set_players(self, name1, name2):
 		self.current_turn = self.PLAYER1_WRAP
-		# self.PLAYER1_WRAP.set_name(name1)
+		self.PLAYER1_WRAP.set_name(name1)
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except socket.error:
@@ -61,7 +61,7 @@ class Referee:
 				return self.REF_WRAP.get_winner(illegal_move)
 			self.REF_WRAP.update_boards(self.boards[0])
 			self.change_current_turn()
-			return self.boards 
+			return self.boards, False
 
 		self.num_passes = 0
 		point = action
@@ -71,7 +71,7 @@ class Referee:
 		new_board = PLAY_WRAP.get_next_board(self.get_current_stone(), point, self.boards[0])
 		self.REF_WRAP.update_boards(new_board)
 		self.change_current_turn()
-		return self.boards
+		return self.boards, False
 
 	def update_boards(self, new_board):
 		boards = self.boards
@@ -84,14 +84,14 @@ class Referee:
 		if illegal_move:
 			winner = self.get_opponent_player()
 			name = winner.get_name()
-			return [name]
+			return [name], illegal_move
 
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
-			return sorted([self.PLAYER1_WRAP.get_name(), self.PLAYER2_WRAP.get_name()])
+			return sorted([self.PLAYER1_WRAP.get_name(), self.PLAYER2_WRAP.get_name()]), illegal_move
 
 		winner = max(score, key=score.get)
-		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()]
+		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()], illegal_move
 
 	def get_current_stone(self):
 		return self.current_turn.get_color()
