@@ -84,13 +84,16 @@ class Referee:
 		if illegal_move:
 			winner = self.get_opponent_player()
 			name = winner.get_name()
+			self.notify_players_end_game()
 			return [name], illegal_move
 
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
+			self.notify_players_end_game()
 			return sorted([self.PLAYER1_WRAP.get_name(), self.PLAYER2_WRAP.get_name()]), illegal_move
 
 		winner = max(score, key=score.get)
+		self.notify_players_end_game()
 		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()], illegal_move
 
 	def get_current_stone(self):
@@ -101,4 +104,8 @@ class Referee:
 
 	def change_current_turn(self):
 		self.current_turn = self.get_opponent_player()
+
+	def notify_players_end_game(self):
+		self.PLAYER1_WRAP.end_game()
+		self.PLAYER2_WRAP.end_game()
 

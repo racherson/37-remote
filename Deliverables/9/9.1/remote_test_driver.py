@@ -48,7 +48,7 @@ try_to_connect(config)
 sock.send(pickle.dumps("establish connection"))
 while True:
     request = pickle.loads(sock.recv(4096))
-    if request == "close":
+    if request[0] == "end-game":
         break
     sock.send(pickle.dumps(get_response(request)))
 sock.close()

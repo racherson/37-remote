@@ -13,18 +13,12 @@ def get_config():
 
 
 class RemotePlayerWrapper:
-    def __init__(self):
+    def __init__(self, accept_socket):
         # shadow states
         self.register_flag = False
         self.receive_flag = False
         self.name = "no name"
-        # establish connection
-        self.config_data = get_config()
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind((self.config_data["IP"], self.config_data["port"]))
-        self.sock.listen(5)
-        self.accept_socket, address = self.sock.accept()
-        self.accept_socket.settimeout(30)
+        self.accept_socket = accept_socket
         _ = self.receive_request()
 
     def get_name(self):
@@ -68,5 +62,5 @@ class RemotePlayerWrapper:
             return self.receive_request()
         return GONE_CRAZY
 
-    def close(self):
-        self.accept_socket.send(pickle.dumps("close"))
+    def end_game(self):
+        self.accept_socket.send(pickle.dumps(["end-game"]))

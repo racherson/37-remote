@@ -1,10 +1,12 @@
 import json
 import sys
 from importlib.machinery import SourceFileLoader
+from helpers import *
 import remote_player_wrapper
 import math
 import admin
 import random
+import socket
 
 
 num_players = 0
@@ -34,6 +36,7 @@ def index_of_name(name):
             return i
 
 
+# give players to administrator, get winner, update rankings
 def play_and_update(player, opponent):
     winner, illegal = admin.administrate(player, opponent)
     if len(winner) == 2:
@@ -52,24 +55,33 @@ def play_and_update(player, opponent):
     return get_loser(player, opponent, winner)
 
 
-if sys.argv[1] == "-league":
-    tournament_type = "round-robin"
-elif sys.argv[1] == "-cup":
-    tournament_type = "single-elimination"
+# get args from command line
+if sys.argv[1] == LEAGUE:
+    tournament_type = LEAGUE
+elif sys.argv[1] == CUP:
+    tournament_type = CUP
+else:
+    tournament_type = None
 
 num_players = int(sys.argv[2])
 players = []
 
+# make socket
+config_data = get_config()
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind((config_data["IP"], config_data["port"]))
+
 # connect remote players
 for i in range(num_players):
-    players.append(remote_player_wrapper.RemotePlayerWrapper())
+    sock.listen(5)
+    accept_socket, address = sock.accept()
+    accept_socket.settimeout(30)
+    players.append(remote_player_wrapper.RemotePlayerWrapper(accept_socket))
 
-
-config_data = get_config()
 defaultFile = SourceFileLoader("default_player", config_data["default-player"]).load_module()
 
 # add extra default players if needed
-while math.log2(num_players) % 1 != 0:
+while math.log2(num_players) % 1 != 0 or num_players == 1:
     players.append(defaultFile.default_player)
     num_players += 1
 
@@ -80,12 +92,12 @@ for i in range(len(players)):
     rankings[players[i].get_name()] = 0
 
 
-if tournament_type == "round-robin":
+if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i:]:
             play_and_update(players[i], opponent)
 
-elif tournament_type == "single-elimination":
+elif tournament_type == CUP:
     while len(players) > 1:
         player1 = players[random.randint(0, len(players) - 1)]
         player2 = players[random.randint(0, len(players) - 1)]
@@ -99,4 +111,5 @@ else:
     raise Exception("Invalid tournament type")
 
 # stout the rankings dictionary
+sock.close()
 print(json.dumps(rankings, separators=(',', ':')))

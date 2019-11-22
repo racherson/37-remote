@@ -4,7 +4,7 @@ from helpers import *
 
 class Player_Wrapper:
 	def __init__(self):
-		self.player = None
+		self.player = Player2()
 
 	def register(self):
 		self.player = Player2()
@@ -26,3 +26,6 @@ class Player_Wrapper:
 		if self.player.get_color() == EMPTY:
 			raise Exception("Player did not receive stones yet")
 		return self.player.make_a_move(boards)
+
+	def end_game(self):
+		pass

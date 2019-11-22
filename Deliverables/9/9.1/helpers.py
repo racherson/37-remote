@@ -4,6 +4,8 @@ BLACK = 'B'
 EMPTY = ' '
 EMPTY_BOARD = [[EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
 PASS = "pass"
+LEAGUE = "-league"
+CUP = "-cup"
 
 
 '''
