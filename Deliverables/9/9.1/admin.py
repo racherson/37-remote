@@ -1,5 +1,3 @@
-import json
-import sys
 from ref_wrapper import Ref_Wrapper
 from referee import Referee
 import socket

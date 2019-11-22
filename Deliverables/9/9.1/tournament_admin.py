@@ -89,7 +89,7 @@ for i in range(len(players)):
     players[i].set_name(str(i))
     rankings[players[i].get_name()] = 0
 
-
+# play pair players as determined by tournament type
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
