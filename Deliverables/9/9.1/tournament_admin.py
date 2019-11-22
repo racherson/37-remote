@@ -39,7 +39,6 @@ def index_of_name(name):
 # give players to administrator, get winner, update rankings
 def play_and_update(player, opponent):
     winner, illegal = admin.administrate(player, opponent)
-    print(winner, illegal)
     if len(winner) == 2:
         winner = flip_coin(player, opponent)
     if illegal:
@@ -48,9 +47,7 @@ def play_and_update(player, opponent):
         default_player = defaultFile.default_player
         default_player.register()
         default_player.set_name(cheater_name)
-        print("default new name:", default_player.get_name())
         players[index_of_name(cheater_name)] = default_player
-    print("winner:", winner[0])
     if rankings[winner[0]] != -1:
         rankings[winner[0]] += 1
     return get_loser(player, opponent, winner)
@@ -85,21 +82,17 @@ defaultFile = SourceFileLoader("default_player", config_data["default-player"]).
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     players.append(defaultFile.default_player)
     num_players += 1
-print(players)
 
 # name players
 rankings = {}
 for i in range(len(players)):
     players[i].set_name(str(i))
     rankings[players[i].get_name()] = 0
-print(rankings)
 
 
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
-            print(len(players))
-            print("current players:", players[i].get_name(), opponent.get_name())
             play_and_update(players[i], opponent)
 
 elif tournament_type == CUP:

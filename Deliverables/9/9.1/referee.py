@@ -6,6 +6,7 @@ import socket
 PLAY_WRAP = PlayWrapper()
 
 
+# change this from a class to just a function?
 class Referee:
 	def __init__(self, remote_player, default_player):
 		self.boards = [EMPTY_BOARD]
@@ -22,13 +23,12 @@ class Referee:
 		except socket.error:
 			return self.get_winner(True)
 
-	def play_game(self, name1, name2):
-		players = self.set_players(name1, name2)
+	def play_game(self, player1, player2):
+		players = self.set_players(player1.get_name(), player2.get_name())
 		if len(players) != 2:  # crazy
 			return players
 		while True:
 			action, illegal = self.get_action()
-			print("action:", action)
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
@@ -85,10 +85,9 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
-			winner = self.get_opponent_player()
-			name = winner.get_name()
+			winner_name = self.get_opponent_player().get_name()
 			self.notify_players_end_game()
-			return [name], illegal_move
+			return [winner_name], illegal_move
 
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:

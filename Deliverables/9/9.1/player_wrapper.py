@@ -7,7 +7,6 @@ class Player_Wrapper:
 		self.player = Player3()
 
 	def register(self):
-		self.player = Player3()
 		return self.player.get_name()
 
 	def receive_stones(self, stone):

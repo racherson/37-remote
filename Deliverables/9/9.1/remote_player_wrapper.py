@@ -37,7 +37,6 @@ class RemotePlayerWrapper:
             data = self.accept_socket.recv(1024)
             request = pickle.loads(data)
         except socket.error:
-            self.accept_socket.close()
             request = "OK"
         return request
 
