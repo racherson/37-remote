@@ -18,6 +18,7 @@ class RemotePlayerWrapper:
         self.register_flag = False
         self.receive_flag = False
         self.name = "no name"
+        self.color = None
         self.accept_socket = accept_socket
         _ = self.receive_request()
 
@@ -28,7 +29,7 @@ class RemotePlayerWrapper:
         self.name = name
 
     def get_color(self):
-        return BLACK
+        return self.color
 
     def receive_request(self):
         # receives data from client socket
@@ -37,7 +38,7 @@ class RemotePlayerWrapper:
             request = pickle.loads(data)
         except socket.error:
             self.accept_socket.close()
-            request = "closing"
+            request = "OK"
         return request
 
     def register(self):
@@ -51,6 +52,7 @@ class RemotePlayerWrapper:
         if self.receive_flag or not self.register_flag:
             return GONE_CRAZY
         self.receive_flag = True
+        self.color = stone
         self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
         return self.receive_request()
 

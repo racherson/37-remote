@@ -15,18 +15,12 @@ class Referee:
 		self.PLAYER1_WRAP = remote_player
 		self.PLAYER2_WRAP = default_player
 
-	def get_boards(self):
-		return self.boards
-
 	def get_action(self):
-		if self.current_turn == self.PLAYER1_WRAP:
-			try:
-				move = self.current_turn.make_a_move(self.boards)
-				return move, False
-			except socket.error:
-				return self.get_winner(True)
-		move = self.current_turn.make_a_move(self.boards)
-		return move, False
+		try:
+			move = self.current_turn.make_a_move(self.boards)
+			return move, False
+		except socket.error:
+			return self.get_winner(True)
 
 	def play_game(self, name1, name2):
 		players = self.set_players(name1, name2)
@@ -34,6 +28,7 @@ class Referee:
 			return players
 		while True:
 			action, illegal = self.get_action()
+			print("action:", action)
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
@@ -43,14 +38,22 @@ class Referee:
 	def set_players(self, name1, name2):
 		self.current_turn = self.PLAYER1_WRAP
 		self.PLAYER1_WRAP.set_name(name1)
+		self.PLAYER2_WRAP.set_name(name2)
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except socket.error:
 			return self.get_winner(True)
 		if received:
 			return self.get_winner(True)
-		self.PLAYER2_WRAP.set_name(name2)
-		self.PLAYER2_WRAP.receive_stones(WHITE)
+
+		try:
+			received = self.PLAYER2_WRAP.receive_stones(WHITE)
+		except socket.error:
+			self.current_turn = self.PLAYER2_WRAP
+			return self.get_winner(True)
+		if received:
+			self.current_turn = self.PLAYER2_WRAP
+			return self.get_winner(True)
 		return self.PLAYER1_WRAP.get_color(), self.PLAYER2_WRAP.get_color()
 
 	def make_action(self, action):

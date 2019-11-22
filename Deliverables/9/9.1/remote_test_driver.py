@@ -16,17 +16,17 @@ def get_response(request):
     if request[0] == "register":
         try:
             result = PLAYER_WRAP.register()
-        except:
+        except socket.error:
             result = GONE_CRAZY
     elif request[0] == "receive-stones":
         try:
             result = PLAYER_WRAP.receive_stones(request[1])
-        except:
+        except socket.error:
             result = GONE_CRAZY
     elif request[0] == "make-a-move":
         try:
             result = PLAYER_WRAP.make_a_move(request[1])
-        except:
+        except socket.error:
             result = GONE_CRAZY
     else:
         result = GONE_CRAZY
@@ -36,7 +36,7 @@ def get_response(request):
 def try_to_connect(config):
     try:
         sock.connect((config["IP"], config["port"]))
-    except:
+    except socket.error:
         try_to_connect(config)
 
 

@@ -1,13 +1,13 @@
-from player import Player2
+from player import Player3
 from helpers import *
 
 
 class Player_Wrapper:
 	def __init__(self):
-		self.player = Player2()
+		self.player = Player3()
 
 	def register(self):
-		self.player = Player2()
+		self.player = Player3()
 		return self.player.get_name()
 
 	def receive_stones(self, stone):
