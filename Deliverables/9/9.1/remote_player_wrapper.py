@@ -34,7 +34,7 @@ class RemotePlayerWrapper:
         try:
             data = self.accept_socket.recv(4096)
             request = pickle.loads(data)
-        except socket.error:
+        except:
             raise socket.error
         return request
 
