@@ -21,7 +21,7 @@ def get_config():
 
 def flip_coin(player1, player2):
     arr = [player1, player2]
-    return arr[random.randint(0, 1)]
+    return [arr[random.randint(0, 1)]]
 
 
 def get_loser(player1, player2, winner):
@@ -39,6 +39,7 @@ def index_of_name(name):
 # give players to administrator, get winner, update rankings
 def play_and_update(player, opponent):
     winner, illegal = admin.administrate(player, opponent)
+    print("tournament admin winner", winner, illegal)
     if len(winner) == 2:
         winner = flip_coin(player, opponent)
     if illegal:
@@ -106,7 +107,7 @@ elif tournament_type == CUP:
         players.pop(index_of_name(loser_name))
 
 else:
-    raise Exception("Invalid tournament type")
+    pass
 
 # stout the rankings dictionary
 sock.close()

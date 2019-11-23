@@ -1,9 +1,8 @@
 import socket
 import json
 import pickle
+from helpers import *
 from player_wrapper import Player_Wrapper
-
-GONE_CRAZY = "GO has gone crazy!"
 
 
 def get_config():
@@ -51,4 +50,4 @@ while True:
     if request[0] == "end-game":
         break
     sock.send(pickle.dumps(get_response(request)))
-sock.close()
+# sock.close()
