@@ -2,7 +2,7 @@ from player import Player3
 from helpers import *
 
 
-class Player_Wrapper:
+class DefaultPlayerWrapper:
 	def __init__(self):
 		# shadow states
 		self.register_flag = False

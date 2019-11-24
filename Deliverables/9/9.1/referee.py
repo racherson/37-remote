@@ -33,7 +33,6 @@ class Referee:
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
-			print("action-made:", action_made)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
 				print("going to return winner", action_made)
 				return action_made, illegal
@@ -44,8 +43,7 @@ class Referee:
 		self.PLAYER2_WRAP.set_name(name2)
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
-		except:
-			print("exception in setting players")
+		except socket.error:
 			return self.get_winner(True)
 		if received:
 			print("invalid setting of players", self.PLAYER1_WRAP)
@@ -53,8 +51,7 @@ class Referee:
 
 		try:
 			received = self.PLAYER2_WRAP.receive_stones(WHITE)
-		except:
-			print("exception in setting players")
+		except socket.error:
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:

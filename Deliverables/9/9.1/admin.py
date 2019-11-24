@@ -29,7 +29,6 @@ def administrate(player1_wrap, player2_wrap):
     ref = Referee(player1_wrap, player2_wrap)
     REF_WRAP = Ref_Wrapper(ref)
     winner, illegal = REF_WRAP.play_game(player1_wrap, player2_wrap)
-    print("admin winner", winner, illegal)
 
     return winner, illegal
 
