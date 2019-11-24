@@ -43,27 +43,43 @@ def create_default_player(name):
     return default_player
 
 
-# give players to administrator, get winner, update rankings
-def play_and_update(player, opponent):
+# give players to admin to play a game
+def play_game(player, opponent):
     winner, illegal = admin.administrate(player, opponent)
-    loser = get_loser(player, opponent, winner[0])
-    print("tournament admin winner", winner, illegal)
     if len(winner) == 2:
         winner = flip_coin(player, opponent)
+    loser = get_loser(player, opponent, winner[0]).get_name()
+    return winner, loser, illegal
+
+
+def update_league(winner, loser, illegal):
     if illegal:
-        cheater_name = loser.get_name()
-        rankings[cheater_name] = 0
-        default_player = create_default_player(cheater_name)
-        players[index_of_name(cheater_name)] = default_player
+        rankings[loser] = 0
+        default_player = create_default_player(loser)
+        players[index_of_name(loser)] = default_player
         # distribute points of loser
-        for player_name in beaten[cheater_name]:
+        for player_name in beaten[loser]:
             rankings[player_name] += 1
-        beaten[cheater_name] = []
+        beaten[loser] = []
     else:
-        beaten[winner[0]].append(loser.get_name())
-    # if rankings[winner[0]] != -1:
+        beaten[winner[0]].append(loser)
     rankings[winner[0]] += 1
     return loser
+
+
+def update_cup(winner, loser, illegal):
+    if illegal:
+        rankings[loser] = -1
+        default_player = create_default_player(loser)
+        players[index_of_name(loser)] = default_player
+    if rankings[winner[0]] != -1:
+        rankings[winner[0]] += 1  # TODO: VERY DIFFERENT RANKINGS FOR CUP TOURNEY?
+    return loser
+
+
+def scores_to_rankings():
+    # need to place player with most points as number 1, etc.
+    pass
 
 
 # get args from command line
@@ -109,7 +125,8 @@ if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
             print(i, opponent.get_name())
-            play_and_update(players[i], opponent)
+            winner, loser, illegal = play_game(players[i], opponent)
+            update_league(winner, loser, illegal)
             print("now players are ", players)
             print("now rankings are ", rankings)
 
@@ -119,9 +136,9 @@ elif tournament_type == CUP:
         player2 = players[random.randint(0, len(players) - 1)]
         while player2 == player1:
             player2 = players[random.randint(0, len(players) - 1)]
-        loser = play_and_update(player1, player2)
-        loser_name = loser.get_name()
-        players.pop(index_of_name(loser_name))  # TODO: This is still messed up? Not popping off, adjust rankings?
+        winner, loser, illegal = play_game(player1, player2)
+        update_cup(winner, loser, illegal)
+        players.pop(index_of_name(loser))
         print("now players are ", players)
         print("now rankings are ", rankings)
 
