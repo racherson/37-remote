@@ -46,17 +46,24 @@ def create_default_player(name):
 # give players to administrator, get winner, update rankings
 def play_and_update(player, opponent):
     winner, illegal = admin.administrate(player, opponent)
+    loser = get_loser(player, opponent, winner[0])
     print("tournament admin winner", winner, illegal)
     if len(winner) == 2:
         winner = flip_coin(player, opponent)
     if illegal:
-        cheater_name = get_loser(player, opponent, winner[0]).get_name()
+        cheater_name = loser.get_name()
         rankings[cheater_name] = 0
         default_player = create_default_player(cheater_name)
         players[index_of_name(cheater_name)] = default_player
+        # distribute points of loser
+        for player_name in beaten[cheater_name]:
+            rankings[player_name] += 1
+        beaten[cheater_name] = []
+    else:
+        beaten[winner[0]].append(loser.get_name())
     # if rankings[winner[0]] != -1:
     rankings[winner[0]] += 1
-    return get_loser(player, opponent, winner[0])
+    return loser
 
 
 # get args from command line
@@ -91,16 +98,18 @@ while math.log2(num_players) % 1 != 0 or num_players == 1:
 
 # name players
 rankings = {}
+beaten = {}
 for i in range(len(players)):
     players[i].set_name(str(i))
     rankings[players[i].get_name()] = 0
+    beaten[players[i].get_name()] = []
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
             print(i, opponent.get_name())
-            play_and_update(players[i], opponent)  # TODO: For cheaters, go back and give points to everyone that played them in the past!
+            play_and_update(players[i], opponent)
             print("now players are ", players)
             print("now rankings are ", rankings)
 
