@@ -66,7 +66,9 @@ def update_league(winner, loser, illegal):
     rankings[winner[0]] += 1
 
 
-def update_cup(winner):
+def update_cup(winner, loser, illegal):
+    if illegal:
+        rankings[loser] = 0
     rankings[winner[0]] += 1
 
 
@@ -141,7 +143,7 @@ elif tournament_type == CUP:
         while player2 == player1:
             player2 = players[random.randint(0, len(players) - 1)]
         winner, loser, illegal = play_game(player1, player2)
-        update_cup(winner)
+        update_cup(winner, loser, illegal)
         players.pop(index_of_name(loser))
         print("now players are ", players)
         print("now rankings are ", rankings)
