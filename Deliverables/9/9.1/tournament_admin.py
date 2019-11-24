@@ -64,22 +64,26 @@ def update_league(winner, loser, illegal):
     else:
         beaten[winner[0]].append(loser)
     rankings[winner[0]] += 1
-    return loser
 
 
-def update_cup(winner, loser, illegal):
-    if illegal:
-        rankings[loser] = -1
-        default_player = create_default_player(loser)
-        players[index_of_name(loser)] = default_player
-    if rankings[winner[0]] != -1:
-        rankings[winner[0]] += 1  # TODO: VERY DIFFERENT RANKINGS FOR CUP TOURNEY?
-    return loser
+def update_cup(winner):
+    rankings[winner[0]] += 1
 
 
 def scores_to_rankings():
     # need to place player with most points as number 1, etc.
-    pass
+    # https://stackoverflow.com/questions/23641054/adding-a-rank-to-a-dict-in-python
+    sorted_by_value = sorted(rankings, key=lambda x: rankings[x], reverse=True)
+    rank = 1
+    last_value = rankings[sorted_by_value[0]]
+    ranked_dict = dict()
+    for name in sorted_by_value:
+        this_value = rankings[name]
+        if this_value != last_value:
+            rank += 1
+        ranked_dict[name] = rank
+        last_value = this_value
+    return ranked_dict
 
 
 # get args from command line
@@ -137,7 +141,7 @@ elif tournament_type == CUP:
         while player2 == player1:
             player2 = players[random.randint(0, len(players) - 1)]
         winner, loser, illegal = play_game(player1, player2)
-        update_cup(winner, loser, illegal)
+        update_cup(winner)
         players.pop(index_of_name(loser))
         print("now players are ", players)
         print("now rankings are ", rankings)
@@ -147,4 +151,7 @@ else:
 
 # stout the rankings dictionary
 sock.close()
-print(json.dumps(rankings, separators=(',', ':')))
+rank_dict = scores_to_rankings()
+print("Final Rankings:")
+for key, val in rank_dict.items():
+    print(val, ": ", key)
