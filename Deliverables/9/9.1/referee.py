@@ -45,16 +45,20 @@ class Referee:
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except:
+			print("exception in setting players")
 			return self.get_winner(True)
 		if received:
+			print("invalid setting of players", self.PLAYER1_WRAP)
 			return self.get_winner(True)
 
 		try:
 			received = self.PLAYER2_WRAP.receive_stones(WHITE)
 		except:
+			print("exception in setting players")
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:
+			print("invalid setting of players", self.PLAYER2_WRAP)
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		return self.PLAYER1_WRAP.get_color(), self.PLAYER2_WRAP.get_color()

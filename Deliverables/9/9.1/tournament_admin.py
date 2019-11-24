@@ -20,7 +20,7 @@ def get_config():
 
 
 def flip_coin(player1, player2):
-    arr = [player1, player2]
+    arr = [player1.get_name(), player2.get_name()]
     return [arr[random.randint(0, 1)]]
 
 
@@ -94,7 +94,9 @@ for i in range(len(players)):
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
-            play_and_update(players[i], opponent)
+            play_and_update(players[i], opponent)  # TODO: For cheaters, go back and give points to everyone that played them in the past!
+            print("now players are ", players)
+            print("now rankings are ", rankings)
 
 elif tournament_type == CUP:
     while len(players) > 1:
@@ -104,7 +106,9 @@ elif tournament_type == CUP:
             player2 = players[random.randint(0, len(players) - 1)]
         loser = play_and_update(player1, player2)
         loser_name = loser.get_name()
-        players.pop(index_of_name(loser_name))
+        players.pop(index_of_name(loser_name))  # TODO: This is still messed up!!
+        print("now players are ", players)
+        print("now rankings are ", rankings)
 
 else:
     pass

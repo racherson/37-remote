@@ -19,6 +19,12 @@ class Player:
 	def set_name(self, name):
 		self.name = name
 
+	def register(self):
+		return self.get_name()
+
+	def receive_stones(self, stone):
+		self.set_color(stone)
+
 	def get_name(self):
 		return self.name
 

@@ -2,7 +2,7 @@ import socket
 import json
 import pickle
 from helpers import *
-from player_wrapper import Player_Wrapper
+from player import Player3
 
 
 def get_config():
@@ -39,7 +39,7 @@ def try_to_connect(config):
         try_to_connect(config)
 
 
-PLAYER_WRAP = Player_Wrapper()
+PLAYER_WRAP = Player3()
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 try_to_connect(config)

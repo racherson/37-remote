@@ -20,6 +20,10 @@ class RemotePlayerWrapper:
         self.accept_socket = accept_socket
         _ = self.receive_request()
 
+    def reset_for_new_game(self):
+        self.register_flag = False
+        self.receive_flag = False
+
     def get_name(self):
         return self.name
 
@@ -43,6 +47,7 @@ class RemotePlayerWrapper:
             return GONE_CRAZY
         self.register_flag = True
         self.accept_socket.send(pickle.dumps(["register"]))
+        print("register receive request")
         return self.receive_request()
 
     def receive_stones(self, stone):
@@ -51,6 +56,7 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
+        print("receive stones receive request")
         return self.receive_request()
 
     def make_a_move(self, boards):
@@ -58,6 +64,7 @@ class RemotePlayerWrapper:
             if len(boards) > 3:
                 return GONE_CRAZY
             self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
+            print("make a move receive request")
             return self.receive_request()
         return GONE_CRAZY
 
