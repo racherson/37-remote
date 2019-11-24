@@ -36,6 +36,13 @@ def index_of_name(name):
             return i
 
 
+def create_default_player(name):
+    default_player = defaultFile.default_player
+    default_player.register()
+    default_player.set_name(name)
+    return default_player
+
+
 # give players to administrator, get winner, update rankings
 def play_and_update(player, opponent):
     winner, illegal = admin.administrate(player, opponent)
@@ -45,13 +52,11 @@ def play_and_update(player, opponent):
     if illegal:
         cheater_name = get_loser(player, opponent, winner[0]).get_name()
         rankings[cheater_name] = -1
-        default_player = defaultFile.default_player
-        default_player.register()
-        default_player.set_name(cheater_name)
+        default_player = create_default_player(cheater_name)
         players[index_of_name(cheater_name)] = default_player
     if rankings[winner[0]] != -1:
         rankings[winner[0]] += 1
-    return get_loser(player, opponent, winner)
+    return get_loser(player, opponent, winner[0])
 
 
 # get args from command line
@@ -89,16 +94,21 @@ rankings = {}
 for i in range(len(players)):
     players[i].set_name(str(i))
     rankings[players[i].get_name()] = 0
+print("player names to start ", players[0].get_name(), players[1].get_name(), players[2].get_name(), players[3].get_name())
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
+    print("round robin")
     for i in range(len(players)):
         for opponent in players[i+1:]:
+            print(i, opponent.get_name())
             play_and_update(players[i], opponent)  # TODO: For cheaters, go back and give points to everyone that played them in the past!
             print("now players are ", players)
+            print("now player names are ", players[0].get_name(), players[1].get_name(), players[2].get_name(), players[3].get_name())
             print("now rankings are ", rankings)
 
 elif tournament_type == CUP:
+    print("elimination")
     while len(players) > 1:
         player1 = players[random.randint(0, len(players) - 1)]
         player2 = players[random.randint(0, len(players) - 1)]
@@ -106,7 +116,7 @@ elif tournament_type == CUP:
             player2 = players[random.randint(0, len(players) - 1)]
         loser = play_and_update(player1, player2)
         loser_name = loser.get_name()
-        players.pop(index_of_name(loser_name))  # TODO: This is still messed up!!
+        players.pop(index_of_name(loser_name))  # TODO: This is still messed up?
         print("now players are ", players)
         print("now rankings are ", rankings)
 

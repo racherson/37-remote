@@ -48,7 +48,10 @@ class RemotePlayerWrapper:
         self.register_flag = True
         self.accept_socket.send(pickle.dumps(["register"]))
         print("register receive request")
-        return self.receive_request()
+        try:
+            return self.receive_request()
+        except:
+            return GONE_CRAZY
 
     def receive_stones(self, stone):
         if self.receive_flag or not self.register_flag:

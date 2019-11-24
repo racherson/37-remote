@@ -15,7 +15,7 @@ def get_response(request):
     if request[0] == "register":
         try:
             result = PLAYER_WRAP.register()
-        except socket.error:
+        except:
             result = GONE_CRAZY
     elif request[0] == "receive-stones":
         try:

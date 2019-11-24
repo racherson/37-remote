@@ -1,6 +1,7 @@
 from ref_wrapper import Ref_Wrapper
 from referee import Referee
 import socket
+from helpers import *
 
 
 def administrate(player1_wrap, player2_wrap):
@@ -11,12 +12,16 @@ def administrate(player1_wrap, player2_wrap):
     player2_wrap.reset_for_new_game()
     # register players
     try:
-        player1_wrap.register()
+        response = player1_wrap.register()
+        if response == GONE_CRAZY:
+            return [player2_wrap.get_name()], True
     except socket.error:
         player2_wrap.register()
         return [player2_wrap.get_name()]
     try:
-        player2_wrap.register()
+        response = player2_wrap.register()
+        if response == GONE_CRAZY:
+            return [player1_wrap.get_name()], True
     except socket.error:
         return [player1_wrap.get_name()]
 
