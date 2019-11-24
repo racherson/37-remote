@@ -65,7 +65,7 @@ if sys.argv[1] == LEAGUE:
 elif sys.argv[1] == CUP:
     tournament_type = CUP
 else:
-    tournament_type = None
+    tournament_type = LEAGUE
 
 num_players = int(sys.argv[2])
 players = []
@@ -112,7 +112,7 @@ elif tournament_type == CUP:
             player2 = players[random.randint(0, len(players) - 1)]
         loser = play_and_update(player1, player2)
         loser_name = loser.get_name()
-        players.pop(index_of_name(loser_name))  # TODO: This is still messed up?
+        players.pop(index_of_name(loser_name))  # TODO: This is still messed up? Not popping off, adjust rankings?
         print("now players are ", players)
         print("now rankings are ", rankings)
 
