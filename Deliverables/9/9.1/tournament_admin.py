@@ -1,6 +1,6 @@
 import json
 import sys
-from importlib.machinery import SourceFileLoader
+import importlib
 from helpers import *
 import remote_player_wrapper
 import math
@@ -37,7 +37,7 @@ def index_of_name(name):
 
 
 def create_default_player(name):
-    default_player = defaultFile.default_player
+    default_player = DefaultPlayer()
     default_player.register()
     default_player.set_name(name)
     return default_player
@@ -74,6 +74,8 @@ players = []
 config_data = get_config()
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((config_data["IP"], config_data["port"]))
+module = importlib.import_module(config_data["default-player"])
+DefaultPlayer = getattr(module, 'Player_Wrapper')
 
 # connect remote players
 for i in range(num_players):
@@ -82,11 +84,9 @@ for i in range(num_players):
     accept_socket.settimeout(30)
     players.append(remote_player_wrapper.RemotePlayerWrapper(accept_socket))
 
-defaultFile = SourceFileLoader("default_player", config_data["default-player"]).load_module()
-
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
-    players.append(defaultFile.default_player)
+    players.append(DefaultPlayer())
     num_players += 1
 
 # name players
