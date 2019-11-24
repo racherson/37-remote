@@ -20,7 +20,7 @@ class Referee:
 		try:
 			move = self.current_turn.make_a_move(self.boards)
 			return move, False
-		except socket.error:
+		except:
 			return self.get_winner(True)
 
 	def play_game(self, player1, player2):
@@ -44,14 +44,14 @@ class Referee:
 		self.PLAYER2_WRAP.set_name(name2)
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
-		except socket.error:
+		except:
 			return self.get_winner(True)
 		if received:
 			return self.get_winner(True)
 
 		try:
 			received = self.PLAYER2_WRAP.receive_stones(WHITE)
-		except socket.error:
+		except:
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:

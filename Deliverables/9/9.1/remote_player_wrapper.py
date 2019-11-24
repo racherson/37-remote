@@ -32,10 +32,10 @@ class RemotePlayerWrapper:
     def receive_request(self):
         # receives data from client socket
         try:
-            data = self.accept_socket.recv(4096)
+            data = self.accept_socket.recv(1024)
             request = pickle.loads(data)
-        except:
-            raise socket.error
+        except (socket.error, socket.timeout):
+            raise Exception("No data received")
         return request
 
     def register(self):
