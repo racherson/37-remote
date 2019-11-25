@@ -18,10 +18,10 @@ class RemotePlayerWrapper:
         self.name = "no name"
         self.color = None
         self.accept_socket = accept_socket
-        try:
-            _ = self.receive_request()
-        except:
-            self.accept_socket.close()
+        # try:
+        #     _ = self.receive_request()
+        # except:
+        #     self.accept_socket.close()
 
     def reset_for_new_game(self):
         self.register_flag = False
