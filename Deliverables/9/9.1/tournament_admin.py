@@ -108,7 +108,7 @@ DefaultPlayer = getattr(module, 'DefaultPlayerWrapper')
 
 # connect remote players
 for i in range(num_players):
-    sock.listen(5)
+    sock.listen(30)
     accept_socket, address = sock.accept()
     accept_socket.settimeout(60)
     players.append(remote_player_wrapper.RemotePlayerWrapper(accept_socket))

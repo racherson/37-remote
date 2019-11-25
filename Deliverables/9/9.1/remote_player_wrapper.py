@@ -18,7 +18,10 @@ class RemotePlayerWrapper:
         self.name = "no name"
         self.color = None
         self.accept_socket = accept_socket
-        _ = self.receive_request()
+        try:
+            _ = self.receive_request()
+        except:
+            self.accept_socket.close()
 
     def reset_for_new_game(self):
         self.register_flag = False
@@ -60,7 +63,10 @@ class RemotePlayerWrapper:
         self.color = stone
         self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
         print("receive stones receive request")
-        return self.receive_request()
+        try:
+            return self.receive_request()
+        except:
+            return GONE_CRAZY
 
     def make_a_move(self, boards):
         if self.receive_flag and self.register_flag:
@@ -68,7 +74,10 @@ class RemotePlayerWrapper:
                 return GONE_CRAZY
             self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
             print("make a move receive request")
-            return self.receive_request()
+            try:
+                return self.receive_request()
+            except:
+                return GONE_CRAZY
         return GONE_CRAZY
 
     def end_game(self):
