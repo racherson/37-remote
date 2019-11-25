@@ -50,4 +50,3 @@ while True:
     if request[0] == "end-game":
         break
     sock.send(pickle.dumps(get_response(request)))
-# sock.close()
