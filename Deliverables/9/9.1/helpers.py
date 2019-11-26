@@ -5,8 +5,8 @@ EMPTY = ' '
 EMPTY_BOARD = [[EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
 PASS = "pass"
 GONE_CRAZY = "GO has gone crazy!"
-LEAGUE = "-league"
-CUP = "-cup"
+LEAGUE = "--league"
+CUP = "--cup"
 
 
 '''
