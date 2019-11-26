@@ -133,8 +133,6 @@ if tournament_type == LEAGUE:
             print(i, opponent.get_name())
             winner, loser, illegal = play_game(players[i], opponent)
             update_league(winner, loser, illegal)
-            print("now players are ", players)
-            print("now rankings are ", rankings)
 
 elif tournament_type == CUP:
     while len(players) > 1:
@@ -145,8 +143,6 @@ elif tournament_type == CUP:
         winner, loser, illegal = play_game(player1, player2)
         update_cup(winner, loser, illegal)
         players.pop(index_of_name(loser))
-        print("now players are ", players)
-        print("now rankings are ", rankings)
 
 else:
     pass

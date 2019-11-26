@@ -46,7 +46,6 @@ class RemotePlayerWrapper:
             return GONE_CRAZY
         self.register_flag = True
         self.accept_socket.send(pickle.dumps(["register"]))
-        print("register receive request")
         try:
             return self.receive_request()
         except:
@@ -58,7 +57,6 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
-        print("receive stones receive request")
         try:
             return self.receive_request()
         except:
@@ -69,7 +67,6 @@ class RemotePlayerWrapper:
             if len(boards) > 3:
                 return GONE_CRAZY
             self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
-            print("make a move receive request")
             try:
                 return self.receive_request()
             except:

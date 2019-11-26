@@ -29,12 +29,10 @@ class Referee:
 			return players
 		while True:
 			action, illegal = self.get_action()
-			print("action:", action)
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
-				print("going to return winner", action_made)
 				return action_made, illegal
 
 	def set_players(self, name1, name2):
@@ -46,7 +44,6 @@ class Referee:
 		except socket.error:
 			return self.get_winner(True)
 		if received:
-			print("invalid setting of players", self.PLAYER1_WRAP)
 			return self.get_winner(True)
 
 		try:
@@ -55,7 +52,6 @@ class Referee:
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:
-			print("invalid setting of players", self.PLAYER2_WRAP)
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		return self.PLAYER1_WRAP.get_color(), self.PLAYER2_WRAP.get_color()
@@ -89,12 +85,10 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
-			print("illegal move getting winner")
 			winner_name = self.get_opponent_player().get_name()
 			self.notify_players_end_game()
 			print(winner_name)
 			return [winner_name], illegal_move
-		print("getting legal winner with score")
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
 			self.notify_players_end_game()
