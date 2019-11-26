@@ -89,11 +89,9 @@ def scores_to_rankings():
 
 
 # get args from command line
-arg = sys.argv[1]
-print("tourney type:", arg)
-if arg == LEAGUE:
+if sys.argv[1] == LEAGUE:
     tournament_type = LEAGUE
-elif arg == CUP:
+elif sys.argv[1] == CUP:
     tournament_type = CUP
 else:
     tournament_type = LEAGUE
