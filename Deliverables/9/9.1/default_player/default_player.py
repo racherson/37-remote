@@ -1,4 +1,4 @@
-from player import Player3
+from player import Player2
 from helpers import *
 
 
@@ -7,7 +7,7 @@ class DefaultPlayerWrapper:
 		# shadow states
 		self.register_flag = False
 		self.receive_flag = False
-		self.player = Player3()
+		self.player = Player2()
 
 	def reset_for_new_game(self):
 		self.register_flag = False
