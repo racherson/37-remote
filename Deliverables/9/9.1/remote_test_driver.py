@@ -49,12 +49,13 @@ try_to_connect(config)
 
 sock.send(pickle.dumps("establish connection"))
 while True:
+    request = None
     try:
         request = pickle.loads(sock.recv(4096))
-    except socket.error:
-        sock.close()
-    print("remote player request", request)
+    except:
+        break
+    print("remote request", request)
     response = get_response(request)
-    print("remote player response", response)
+    print("remote response", response)
     if response:
         sock.send(pickle.dumps(response))
