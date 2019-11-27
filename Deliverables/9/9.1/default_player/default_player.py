@@ -14,7 +14,6 @@ class DefaultPlayerWrapper:
 		self.receive_flag = False
 
 	def register(self):
-		print("register flag is", self.register_flag)
 		if self.register_flag:
 			return GONE_CRAZY
 		self.register_flag = True

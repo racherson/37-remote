@@ -1,7 +1,7 @@
 from helpers import *
 import socket
 import json
-import pickle
+# import pickle
 
 
 def get_config():
@@ -36,19 +36,18 @@ class RemotePlayerWrapper:
     def receive_request(self):
         # receives data from client socket
         try:
-            data = self.accept_socket.recv(1024)
-            request = pickle.loads(data)
+            data = self.accept_socket.recv(4096)
+            request = data.decode()
         except (socket.error, socket.timeout):
             raise Exception("No data received")
         return request
 
     def register(self):
-        print("register flag is:", self.register_flag)
         if self.register_flag:
             return GONE_CRAZY
         self.register_flag = True
         print("sending register request")
-        self.accept_socket.send(pickle.dumps(["register"]))
+        self.accept_socket.send('["register"]')
         try:
             return self.receive_request()
         except Exception as e:
@@ -61,7 +60,7 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         print("sending receive stones request")
-        self.accept_socket.send(pickle.dumps(["receive-stones", stone]))
+        self.accept_socket.send('["receive-stones",' + stone + ']')
         # try:
         #     return self.receive_request()
         # except:
@@ -72,7 +71,7 @@ class RemotePlayerWrapper:
             if len(boards) > 3:
                 return GONE_CRAZY
             print("sending make a move request")
-            self.accept_socket.send(pickle.dumps(["make-a-move", boards]))
+            self.accept_socket.send('["make-a-move", ' + boards + ']')
             try:
                 return self.receive_request()
             except:
@@ -80,5 +79,5 @@ class RemotePlayerWrapper:
         return GONE_CRAZY
 
     def end_game(self):
-        self.accept_socket.send(pickle.dumps(["end-game"]))
+        self.accept_socket.send('["end-game"]')
         self.receive_request()
