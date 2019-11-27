@@ -52,7 +52,7 @@ class RemotePlayerWrapper:
         try:
             response = self.receive_response()
             print("THIS IS THE REGISTER RESPONSE", response)
-            return response
+            return response.strip('\"').strip('\\')
         except Exception as e:
             print("remote player register exception:", e)
             return GONE_CRAZY
