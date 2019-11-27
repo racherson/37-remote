@@ -102,15 +102,3 @@ class Player3(Player):
 			return PASS
 		col = random.randint(0, BOARD_SIZE - 1)
 		return [row, col]
-
-
-
-
-
-
-
-
-
-
-
-

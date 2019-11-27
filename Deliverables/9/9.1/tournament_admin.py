@@ -55,6 +55,7 @@ def play_game(player, opponent):
 def update_league(winner, loser, illegal):
     if illegal:
         rankings[loser] = 0
+        print("illegal move, so making new default player")
         default_player = create_default_player(loser)
         players[index_of_name(loser)] = default_player
         # distribute points of loser
@@ -110,7 +111,7 @@ DefaultPlayer = getattr(module, 'DefaultPlayerWrapper')
 for i in range(num_players):
     sock.listen(30)
     accept_socket, address = sock.accept()
-    accept_socket.settimeout(60)
+    # accept_socket.settimeout(60)
     players.append(remote_player_wrapper.RemotePlayerWrapper(accept_socket))
 
 # add extra default players if needed
@@ -130,7 +131,10 @@ for i in range(len(players)):
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
+            print("tourney admin makes a game:", players[i], opponent)
             winner, loser, illegal = play_game(players[i], opponent)
+            print("winner", winner)
+            print("loser", loser)
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:

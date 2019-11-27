@@ -18,7 +18,7 @@ class RemotePlayerWrapper:
         self.name = "no name"
         self.color = None
         self.accept_socket = accept_socket
-        # self.receive_request()
+        self.receive_request()
 
     def reset_for_new_game(self):
         self.register_flag = False
@@ -51,7 +51,8 @@ class RemotePlayerWrapper:
         self.accept_socket.send(pickle.dumps(["register"]))
         try:
             return self.receive_request()
-        except:
+        except Exception as e:
+            print("remote player register exception:", e)
             return GONE_CRAZY
 
     def receive_stones(self, stone):
@@ -80,3 +81,4 @@ class RemotePlayerWrapper:
 
     def end_game(self):
         self.accept_socket.send(pickle.dumps(["end-game"]))
+        self.receive_request()
