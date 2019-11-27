@@ -50,7 +50,9 @@ class RemotePlayerWrapper:
         print("sending register request")
         self.accept_socket.send(json.dumps(["register"]).encode())
         try:
-            return self.receive_response()
+            response = self.receive_response()
+            print("THIS IS THE REGISTER RESPONSE", response)
+            return response
         except Exception as e:
             print("remote player register exception:", e)
             return GONE_CRAZY
