@@ -36,7 +36,7 @@ class RemotePlayerWrapper:
         # receives data from client socket
         try:
             data = self.accept_socket.recv(4096)
-            request = json.loads(data)
+            request = json.loads(data.decode())
             print("received", request)
         except (socket.error, socket.timeout):
             print("couldn't receive anything!")
