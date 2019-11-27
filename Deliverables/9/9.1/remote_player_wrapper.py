@@ -17,7 +17,7 @@ class RemotePlayerWrapper:
         self.name = "no name"
         self.color = None
         self.accept_socket = accept_socket
-        # self.receive_request()
+        # self.receive_response()
 
     def reset_for_new_game(self):
         self.register_flag = False
@@ -32,7 +32,7 @@ class RemotePlayerWrapper:
     def get_color(self):
         return self.color
 
-    def receive_request(self):
+    def receive_response(self):
         # receives data from client socket
         try:
             data = self.accept_socket.recv(4096)
@@ -50,7 +50,7 @@ class RemotePlayerWrapper:
         print("sending register request")
         self.accept_socket.send('["register"]'.encode())
         try:
-            return self.receive_request()
+            return self.receive_response()
         except Exception as e:
             print("remote player register exception:", e)
             return GONE_CRAZY
@@ -76,7 +76,9 @@ class RemotePlayerWrapper:
             to_send = '["make-a-move", ' + boards + ']'
             self.accept_socket.send(to_send.encode())
             try:
-                return self.receive_request()
+                response = self.receive_response()
+                print("get back from make a move", response)
+                return response
             except:
                 print("can't get a move")
                 return GONE_CRAZY
@@ -84,4 +86,4 @@ class RemotePlayerWrapper:
 
     def end_game(self):
         self.accept_socket.send('["end-game"]'.encode())
-        self.receive_request()
+        self.receive_response()
