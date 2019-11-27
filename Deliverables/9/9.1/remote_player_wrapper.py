@@ -1,7 +1,6 @@
 from helpers import *
 import socket
 import json
-# import pickle
 
 
 def get_config():
@@ -38,7 +37,9 @@ class RemotePlayerWrapper:
         try:
             data = self.accept_socket.recv(4096)
             request = data.decode()
+            print("received", request)
         except (socket.error, socket.timeout):
+            print("couldn't receive anything!")
             raise Exception("No data received")
         return request
 
@@ -60,10 +61,8 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         print("sending receive stones request")
-        message = "receive-stones"
-        to_send = '[' + message + ', "' + stone + '"]'
-        print(to_send)
-        self.accept_socket.send(to_send.encode())
+        message = '["receive-stones", ' + stone + ']'
+        self.accept_socket.send(message.encode())
         # try:
         #     return self.receive_request()
         # except:
@@ -79,6 +78,7 @@ class RemotePlayerWrapper:
             try:
                 return self.receive_request()
             except:
+                print("can't get a move")
                 return GONE_CRAZY
         return GONE_CRAZY
 

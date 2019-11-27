@@ -1,6 +1,5 @@
 import socket
 import json
-# import pickle
 from helpers import *
 from player import Player1
 
