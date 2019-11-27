@@ -48,7 +48,8 @@ class RemotePlayerWrapper:
             return GONE_CRAZY
         self.register_flag = True
         print("sending register request")
-        self.accept_socket.send('["register"]'.encode())
+        # self.accept_socket.send('["register"]'.encode())
+        self.accept_socket.send(json.dumps(["register"]).encode())
         try:
             return self.receive_response()
         except Exception as e:
@@ -61,8 +62,9 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         print("sending receive stones request")
-        message = '["receive-stones", ' + stone + ']'
-        self.accept_socket.send(message.encode())
+        # message = '["receive-stones", ' + stone + ']'
+        # self.accept_socket.send(message.encode())
+        self.accept_socket.send(json.dumps(["receive-stones", stone]).encode())
         # try:
         #     return self.receive_request()
         # except:
@@ -73,8 +75,9 @@ class RemotePlayerWrapper:
             if len(boards) > 3:
                 return GONE_CRAZY
             print("sending make a move request")
-            to_send = '["make-a-move", ' + boards + ']'
-            self.accept_socket.send(to_send.encode())
+            # to_send = '["make-a-move", ' + boards + ']'
+            # self.accept_socket.send(to_send.encode())
+            self.accept_socket.send(json.dumps(["make-a-move", boards]).encode())
             try:
                 response = self.receive_response()
                 print("get back from make a move", response)
@@ -85,5 +88,5 @@ class RemotePlayerWrapper:
         return GONE_CRAZY
 
     def end_game(self):
-        self.accept_socket.send('["end-game"]'.encode())
+        self.accept_socket.send(json.dumps(["end-game"]).encode())
         self.receive_response()
