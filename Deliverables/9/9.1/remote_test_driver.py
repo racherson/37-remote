@@ -1,6 +1,6 @@
 import socket
 import json
-import pickle
+# import pickle
 from helpers import *
 from player import Player1
 
@@ -14,6 +14,7 @@ def get_config():
 def get_response(request):
     if request[0] == "register":
         try:
+            print("trying to register")
             result = PLAYER_WRAP.register()
         except:
             print("exception when trying to register remote player")
@@ -31,6 +32,7 @@ def get_response(request):
     elif request[0] == "end-game":
         result = "OK"
     else:
+        print("else case")
         result = GONE_CRAZY
     return result
 
@@ -47,15 +49,15 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 try_to_connect(config)
 
-sock.send(pickle.dumps("establish connection"))
+sock.send("establish connection".encode())
 while True:
     request = None
     try:
-        request = pickle.loads(sock.recv(4096))
+        request = sock.recv(4096).decode()
     except:
         break
     print("remote request", request)
     response = get_response(request)
     print("remote response", response)
     if response:
-        sock.send(pickle.dumps(response))
+        sock.send(response.encode())

@@ -18,7 +18,7 @@ class RemotePlayerWrapper:
         self.name = "no name"
         self.color = None
         self.accept_socket = accept_socket
-        # self.receive_request()
+        self.receive_request()
 
     def reset_for_new_game(self):
         self.register_flag = False
@@ -47,7 +47,7 @@ class RemotePlayerWrapper:
             return GONE_CRAZY
         self.register_flag = True
         print("sending register request")
-        self.accept_socket.send('["register"]')
+        self.accept_socket.send('["register"]'.encode())
         try:
             return self.receive_request()
         except Exception as e:
@@ -60,7 +60,9 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         print("sending receive stones request")
-        self.accept_socket.send('["receive-stones",' + stone + ']')
+        to_send = '["receive-stones",' + stone + ']'
+        print(to_send)
+        self.accept_socket.send(to_send.encode())
         # try:
         #     return self.receive_request()
         # except:
@@ -71,7 +73,8 @@ class RemotePlayerWrapper:
             if len(boards) > 3:
                 return GONE_CRAZY
             print("sending make a move request")
-            self.accept_socket.send('["make-a-move", ' + boards + ']')
+            to_send = '["make-a-move", ' + boards + ']'
+            self.accept_socket.send(to_send.encode())
             try:
                 return self.receive_request()
             except:
@@ -79,5 +82,5 @@ class RemotePlayerWrapper:
         return GONE_CRAZY
 
     def end_game(self):
-        self.accept_socket.send('["end-game"]')
+        self.accept_socket.send('["end-game"]'.encode())
         self.receive_request()
