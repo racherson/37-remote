@@ -18,7 +18,7 @@ class RemotePlayerWrapper:
         self.name = "no name"
         self.color = None
         self.accept_socket = accept_socket
-        self.receive_request()
+        # self.receive_request()
 
     def reset_for_new_game(self):
         self.register_flag = False
@@ -43,6 +43,7 @@ class RemotePlayerWrapper:
         return request
 
     def register(self):
+        print("register flag is:", self.register_flag)
         if self.register_flag:
             return GONE_CRAZY
         self.register_flag = True
