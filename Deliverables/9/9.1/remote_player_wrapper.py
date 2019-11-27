@@ -41,14 +41,13 @@ class RemotePlayerWrapper:
         except (socket.error, socket.timeout):
             print("couldn't receive anything!")
             raise Exception("No data received")
-        return request
+        return request.strip('\"')
 
     def register(self):
         if self.register_flag:
             return GONE_CRAZY
         self.register_flag = True
         print("sending register request")
-        # self.accept_socket.send('["register"]'.encode())
         self.accept_socket.send(json.dumps(["register"]).encode())
         try:
             return self.receive_response()
@@ -62,21 +61,13 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         print("sending receive stones request")
-        # message = '["receive-stones", ' + stone + ']'
-        # self.accept_socket.send(message.encode())
         self.accept_socket.send(json.dumps(["receive-stones", stone]).encode())
-        # try:
-        #     return self.receive_request()
-        # except:
-        #     return GONE_CRAZY
 
     def make_a_move(self, boards):
         if self.receive_flag and self.register_flag:
             if len(boards) > 3:
                 return GONE_CRAZY
             print("sending make a move request")
-            # to_send = '["make-a-move", ' + boards + ']'
-            # self.accept_socket.send(to_send.encode())
             self.accept_socket.send(json.dumps(["make-a-move", boards]).encode())
             try:
                 response = self.receive_response()

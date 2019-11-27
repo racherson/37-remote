@@ -31,7 +31,6 @@ class Referee:
 			return players
 		while True:
 			action, illegal = self.get_action()
-			print("action:", action)
 			if isinstance(action[0], str) and len(action) < 3:
 				print("winner found!", action)
 				return action, illegal
