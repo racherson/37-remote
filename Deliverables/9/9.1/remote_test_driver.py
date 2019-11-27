@@ -14,10 +14,8 @@ def get_config():
 def get_response(request):
     if request[0] == "register":
         try:
-            print("trying to register")
             result = PLAYER_WRAP.register()
         except:
-            print("exception when trying to register remote player")
             result = GONE_CRAZY
     elif request[0] == "receive-stones":
         try:
@@ -32,7 +30,6 @@ def get_response(request):
     elif request[0] == "end-game":
         result = "OK"
     else:
-        print("else case")
         result = GONE_CRAZY
     return result
 
@@ -56,8 +53,6 @@ while True:
         request = sock.recv(4096).decode()
     except:
         break
-    print("remote request", request)
     response = get_response(request)
-    print("remote response", response)
     if response:
         sock.send(response.encode())

@@ -60,7 +60,8 @@ class RemotePlayerWrapper:
         self.receive_flag = True
         self.color = stone
         print("sending receive stones request")
-        to_send = '["receive-stones",' + stone + ']'
+        message = "receive-stones"
+        to_send = '[' + message + ',' + str(stone) + ']'
         print(to_send)
         self.accept_socket.send(to_send.encode())
         # try:
