@@ -20,6 +20,7 @@ class Referee:
 		print("get action")
 		try:
 			move = self.current_turn.make_a_move(self.boards)
+			move = move.strip('\"')
 			return move, False
 		except:
 			return self.get_winner(True)
