@@ -7,6 +7,7 @@ PASS = "pass"
 GONE_CRAZY = "GO has gone crazy!"
 LEAGUE = "--league"
 CUP = "--cup"
+recv_size = 4096
 
 
 '''

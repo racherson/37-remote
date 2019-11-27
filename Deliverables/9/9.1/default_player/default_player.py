@@ -17,14 +17,12 @@ class DefaultPlayerWrapper:
 		if self.register_flag:
 			return GONE_CRAZY
 		self.register_flag = True
-		print("registering default player")
 		return self.player.get_name()
 
 	def receive_stones(self, stone):
 		if self.receive_flag or not self.register_flag:
 			return GONE_CRAZY
 		self.receive_flag = True
-		print("receiving stones default player")
 		self.player.set_color(stone)
 
 	def set_name(self, name):
@@ -40,7 +38,6 @@ class DefaultPlayerWrapper:
 		if self.receive_flag and self.register_flag:
 			if len(boards) > 3:
 				return GONE_CRAZY
-			print("make a move default player")
 			return self.player.make_a_move(boards)
 		return GONE_CRAZY
 

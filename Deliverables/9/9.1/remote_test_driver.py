@@ -49,7 +49,7 @@ sock.send("establish connection".encode())
 while True:
     request = None
     try:
-        request = json.loads(sock.recv(4096)).decode()
+        request = json.loads(sock.recv(recv_size)).decode()
     except:
         break
     response = get_response(request)

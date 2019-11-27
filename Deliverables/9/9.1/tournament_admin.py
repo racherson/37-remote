@@ -9,10 +9,6 @@ import random
 import socket
 
 
-num_players = 0
-tournament_type = None
-
-
 def get_config():
     with open('go.config') as config_file:
         config_data = json.load(config_file)
@@ -55,7 +51,6 @@ def play_game(player, opponent):
 def update_league(winner, loser, illegal):
     if illegal:
         rankings[loser] = 0
-        print("illegal move, so making new default player")
         default_player = create_default_player(loser)
         players[index_of_name(loser)] = default_player
         # distribute points of loser
@@ -88,6 +83,9 @@ def scores_to_rankings():
         last_value = this_value
     return ranked_dict
 
+
+num_players = 0
+tournament_type = None
 
 # get args from command line
 if sys.argv[1] == LEAGUE:
@@ -132,10 +130,7 @@ for i in range(len(players)):
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
-            print("tourney admin makes a game:", players[i], opponent)
             winner, loser, illegal = play_game(players[i], opponent)
-            print("winner", winner)
-            print("loser", loser)
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:

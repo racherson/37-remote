@@ -17,7 +17,6 @@ class Referee:
 		self.PLAYER2_WRAP = default_player
 
 	def get_action(self):
-		print("get action")
 		try:
 			move = self.current_turn.make_a_move(self.boards)
 			return move, False
@@ -26,13 +25,11 @@ class Referee:
 
 	def play_game(self, player1, player2):
 		players = self.set_players(player1.get_name(), player2.get_name())
-		print("set players complete, players are:", players)
 		if len(players) != 2:  # crazy
 			return players
 		while True:
 			action, illegal = self.get_action()
 			if isinstance(action[0], str) and len(action) < 3:
-				print("winner found!", action)
 				return action, illegal
 			action_made, illegal = self.make_action(action)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
@@ -45,7 +42,6 @@ class Referee:
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except socket.error:
-			print("socket error in p1 receive stones")
 			return self.get_winner(True)
 		if received:
 			return self.get_winner(True)
@@ -53,7 +49,6 @@ class Referee:
 		try:
 			received = self.PLAYER2_WRAP.receive_stones(WHITE)
 		except socket.error:
-			print("socket error in p2 receive stones")
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:
@@ -90,19 +85,16 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
-			print("getting winner illegal move")
 			winner_name = self.get_opponent_player().get_name()
 			self.notify_players_end_game()
 			return [winner_name], illegal_move
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
 			self.notify_players_end_game()
-			print("tie game!")
 			return sorted([self.PLAYER1_WRAP.get_name(), self.PLAYER2_WRAP.get_name()]), illegal_move
 
 		winner = max(score, key=score.get)
 		self.notify_players_end_game()
-		print("getting winner legal move")
 		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()], illegal_move
 
 	def get_current_stone(self):
@@ -115,7 +107,6 @@ class Referee:
 		self.current_turn = self.get_opponent_player()
 
 	def notify_players_end_game(self):
-		print("ending game...")
 		self.PLAYER1_WRAP.end_game()
 		self.PLAYER2_WRAP.end_game()
 
