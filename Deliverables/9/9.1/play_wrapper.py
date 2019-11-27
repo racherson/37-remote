@@ -8,7 +8,10 @@ class PlayWrapper:
 		pass
 
 	def action(self, act):
-		return play.action(act)
+		try:
+			return play.action(act)
+		except:
+			return
 
 	def score(self, board):
 		return play.score(board)
