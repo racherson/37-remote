@@ -36,7 +36,7 @@ class RemotePlayerWrapper:
         # receives data from client socket
         try:
             data = self.accept_socket.recv(4096)
-            request = data.decode()
+            request = json.loads(data)
             print("received", request)
         except (socket.error, socket.timeout):
             print("couldn't receive anything!")
@@ -52,7 +52,7 @@ class RemotePlayerWrapper:
         try:
             response = self.receive_response()
             print("THIS IS THE REGISTER RESPONSE", response)
-            return response.strip('\"').strip('\\')
+            return response
         except Exception as e:
             print("remote player register exception:", e)
             return GONE_CRAZY
