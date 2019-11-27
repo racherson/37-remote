@@ -49,4 +49,6 @@ while True:
     request = pickle.loads(sock.recv(4096))
     if request[0] == "end-game":
         break
-    sock.send(pickle.dumps(get_response(request)))
+    response = get_response(request)
+    if response:
+        sock.send(pickle.dumps(response))

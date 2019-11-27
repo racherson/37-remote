@@ -7,6 +7,8 @@ from helpers import *
 def administrate(player1_wrap, player2_wrap):
     player1_wrap.reset_for_new_game()
     player2_wrap.reset_for_new_game()
+    print("starting game...")
+    print("players: ", player1_wrap.get_name(), player2_wrap.get_name())
     # register players
     try:
         response = player1_wrap.register()

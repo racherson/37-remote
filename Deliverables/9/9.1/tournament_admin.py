@@ -130,7 +130,6 @@ for i in range(len(players)):
 if tournament_type == LEAGUE:
     for i in range(len(players)):
         for opponent in players[i+1:]:
-            print(i, opponent.get_name())
             winner, loser, illegal = play_game(players[i], opponent)
             update_league(winner, loser, illegal)
 

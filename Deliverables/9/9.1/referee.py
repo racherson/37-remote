@@ -87,7 +87,6 @@ class Referee:
 		if illegal_move:
 			winner_name = self.get_opponent_player().get_name()
 			self.notify_players_end_game()
-			print(winner_name)
 			return [winner_name], illegal_move
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
