@@ -151,6 +151,7 @@ else:
     pass
 
 # stout the rankings dictionary
+sock.shutdown(socket.SHUT_RDWR)
 sock.close()
 rank_dict = scores_to_rankings()
 print("Final Rankings:")
