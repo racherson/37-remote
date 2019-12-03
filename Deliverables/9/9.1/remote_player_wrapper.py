@@ -38,7 +38,9 @@ class RemotePlayerWrapper:
             request = json.loads(data.decode())
         except (socket.error, socket.timeout):
             raise Exception("No data received")
-        return request.strip('\"')
+        if isinstance(request, str):
+            request = request.strip('\"')
+        return request
 
     def register(self):
         if self.register_flag:

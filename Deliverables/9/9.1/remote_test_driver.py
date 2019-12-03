@@ -45,13 +45,11 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 try_to_connect(config)
 
-sock.send("establish connection".encode())
 while True:
-    request = None
     try:
-        request = json.loads(sock.recv(recv_size)).decode()
+        request = json.loads(sock.recv(recv_size).decode())
     except:
         break
     response = get_response(request)
     if response:
-        sock.send(response.encode())
+        sock.send(json.dumps(response).encode())
