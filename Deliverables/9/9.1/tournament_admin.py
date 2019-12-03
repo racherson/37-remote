@@ -126,8 +126,8 @@ while math.log2(num_players) % 1 != 0 or num_players == 1:
 rankings = {}
 beaten = {}
 for i in range(len(players)):
-    if i > num_remote - 1:
-        players[i].set_name(str(i))
+    if i >= num_remote:
+        players[i].set_name("default-player-" + str(num_remote-i))
     rankings[players[i].get_name()] = 0
     beaten[players[i].get_name()] = []
 
