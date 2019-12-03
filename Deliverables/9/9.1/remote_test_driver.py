@@ -45,7 +45,6 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 try_to_connect(config)
 
-sock.send(json.dumps("establish connection").encode())
 while True:
     try:
         request = json.loads(sock.recv(recv_size).decode())
