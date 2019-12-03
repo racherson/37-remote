@@ -112,6 +112,10 @@ for i in range(num_players):
     accept_socket, address = sock.accept()
     accept_socket.settimeout(60)
     players.append(remote_player_wrapper.RemotePlayerWrapper(accept_socket))
+    name = players[-1].register()
+    players[-1].set_name(name)
+
+num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
@@ -122,7 +126,8 @@ while math.log2(num_players) % 1 != 0 or num_players == 1:
 rankings = {}
 beaten = {}
 for i in range(len(players)):
-    players[i].set_name(str(i))
+    if i > num_remote - 1:
+        players[i].set_name(str(i))
     rankings[players[i].get_name()] = 0
     beaten[players[i].get_name()] = []
 

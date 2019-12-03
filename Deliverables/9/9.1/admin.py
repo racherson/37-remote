@@ -3,7 +3,6 @@ from referee import Referee
 import socket
 from helpers import *
 
-
 def administrate(player1_wrap, player2_wrap):
     player1_wrap.reset_for_new_game()
     player2_wrap.reset_for_new_game()
@@ -12,13 +11,17 @@ def administrate(player1_wrap, player2_wrap):
         response = player1_wrap.register()
         if response == GONE_CRAZY:
             return [player2_wrap.get_name()], True
+        player1_wrap.set_name(response)
+            
     except socket.error:
         player2_wrap.register()
         return [player2_wrap.get_name()]
+
     try:
         response = player2_wrap.register()
         if response == GONE_CRAZY:
             return [player1_wrap.get_name()], True
+        player2_wrap.set_name(response)
     except socket.error:
         return [player1_wrap.get_name()]
 
