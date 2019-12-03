@@ -68,9 +68,22 @@ def update_cup(winner, loser, illegal):
     rankings[winner[0]] += 1
 
 
+# def scores_to_rankings():
+#     # need to place player with most points as number 1, etc.
+#     # https://stackoverflow.com/questions/23641054/adding-a-rank-to-a-dict-in-python
+#     sorted_by_value = sorted(rankings, key=lambda x: rankings[x], reverse=True)
+#     rank = 1
+#     last_value = rankings[sorted_by_value[0]]
+#     ranked_dict = dict()
+#     for name in sorted_by_value:
+#         this_value = rankings[name]
+#         if this_value != last_value:
+#             rank += 1
+#         ranked_dict[name] = rank
+#         last_value = this_value
+#     return ranked_dict
+
 def scores_to_rankings():
-    # need to place player with most points as number 1, etc.
-    # https://stackoverflow.com/questions/23641054/adding-a-rank-to-a-dict-in-python
     sorted_by_value = sorted(rankings, key=lambda x: rankings[x], reverse=True)
     rank = 1
     last_value = rankings[sorted_by_value[0]]
@@ -79,7 +92,10 @@ def scores_to_rankings():
         this_value = rankings[name]
         if this_value != last_value:
             rank += 1
-        ranked_dict[name] = rank
+        if rank in ranked_dict:
+            ranked_dict[rank].append(name)
+        else:
+            ranked_dict[rank] = [name]
         last_value = this_value
     return ranked_dict
 
@@ -127,7 +143,7 @@ rankings = {}
 beaten = {}
 for i in range(len(players)):
     if i >= num_remote:
-        players[i].set_name("default-player-" + str(num_remote-i))
+        players[i].set_name("default-player-" + str(num_remote-i+1))
     rankings[players[i].get_name()] = 0
     beaten[players[i].get_name()] = []
 
@@ -157,4 +173,4 @@ sock.close()
 rank_dict = scores_to_rankings()
 print("Final Rankings:")
 for key, val in rank_dict.items():
-    print(val, ": ", key)
+    print(key, ": ", val)
