@@ -1,6 +1,7 @@
 import socket
 import json
 from helpers import *
+from player_wrapper import Player_Wrapper
 from player import Player1
 
 
@@ -14,6 +15,7 @@ def get_response(request):
     if request[0] == "register":
         try:
             result = PLAYER_WRAP.register()
+            print("test driver result", result)
         except:
             result = GONE_CRAZY
     elif request[0] == "receive-stones":
@@ -40,7 +42,8 @@ def try_to_connect(config):
         try_to_connect(config)
 
 
-PLAYER_WRAP = Player1()
+# PLAYER_WRAP = Player_Wrapper("hello")
+PLAYER_WRAP = Player1("hello")
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 try_to_connect(config)

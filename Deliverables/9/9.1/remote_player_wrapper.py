@@ -19,14 +19,9 @@ class RemotePlayerWrapper:
         self.accept_socket = accept_socket
 
     def reset_for_new_game(self):
+        print("reseting flags")
         self.register_flag = False
         self.receive_flag = False
-
-    def get_name(self):
-        return self.name
-
-    def set_name(self, name):
-        self.name = name
 
     def get_color(self):
         return self.color
@@ -44,13 +39,16 @@ class RemotePlayerWrapper:
 
     def register(self):
         if self.register_flag:
+            print(self.register_flag)
             return GONE_CRAZY
         self.register_flag = True
         self.accept_socket.send(json.dumps(["register"]).encode())
         try:
             response = self.receive_response()
+            print(response)
             return response
         except socket.error:
+            print("socket error")
             return GONE_CRAZY
 
     def receive_stones(self, stone):
