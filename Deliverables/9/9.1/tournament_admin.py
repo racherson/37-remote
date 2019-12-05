@@ -73,18 +73,17 @@ def play_game(player, opponent, p_name, o_name):
 def update_league(winner, loser, illegal):
     if illegal:
         rankings[loser] = 0
-        cheaters.add(loser)
         default_player, name = create_default_player(cheater=True)
         # replace internal player name in player list
         player_list[player_list.index(loser)] = name
-        # put the replacement player in everything else
+        # put the replacement player in all other data structures
         add_player_to_tournament(default_player, name, replacement=True)
         # distribute points of loser
         for player_name in beaten[loser]:
-            if player_name not in cheaters:
-                rankings[player_name] += 1
+            rankings[player_name] += 1
         beaten[loser] = []
     else:
+        # only add non cheaters so we don't give back points to any cheaters
         beaten[winner[0]].append(loser)
     rankings[winner[0]] += 1
 
@@ -129,7 +128,6 @@ player_names = {}  # dictionary mapping player names to registered names (actual
 rankings = {}  # mapping player names to scores
 beaten = {}  # mapping player names to names of players beaten
 player_list = []  # list of internal player names
-cheaters = set()  # set of all cheaters
 
 # make socket
 sock, DefaultPlayer = setup_from_config()
@@ -158,21 +156,21 @@ if tournament_type == LEAGUE:
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:
-    while len(player_list) > 1:
-        player1 = player_list[0]
-        player2 = player_list[1]
+    cup_player_list = list(players.keys())
+    while len(cup_player_list) > 1:
+        player1 = cup_player_list[0]
+        player2 = cup_player_list[1]
         winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
+        print("winner", winner)
+        print("loser", loser)
+        print("illegal", illegal)
         update_cup(winner, loser, illegal)
-        player_list.remove(loser)
+        cup_player_list.remove(loser)
 
 
 # stout the rankings dictionary
 sock.close()
 rank_dict = scores_to_rankings()
-print("Players:", players)
-print("Player names:", player_names)
-print("Scores:", rankings)
-print("Beaten:", beaten)
 print("Final Rankings:")
 for key, val in rank_dict.items():
     print(key, ": ", val)
