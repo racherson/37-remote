@@ -16,17 +16,11 @@ class Player:
 		self.name = "no name"
 		self.color = EMPTY
 
-	# def set_name(self, name):
-	# 	self.name = name
-
 	def register(self):
 		return self.name
 
 	def receive_stones(self, stone):
 		self.set_color(stone)
-
-	# def get_name(self):
-	# 	return self.name
 
 	def set_color(self, color):
 		self.color = color

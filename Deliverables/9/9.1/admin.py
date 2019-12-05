@@ -9,13 +9,16 @@ def administrate(player1_wrap, player2_wrap, player1_name, player2_name):
     player2_wrap.reset_for_new_game()
     # register players
     try:
+        print("registering player1")
         response = player1_wrap.register()
         if response == GONE_CRAZY:
+            print("player1 register is gone crazy")
             return [player2_name], True
     except socket.error:
         return [player2_name]
 
     try:
+        print("registering player2")
         response = player2_wrap.register()
         if response == GONE_CRAZY:
             return [player1_name], True
@@ -26,6 +29,7 @@ def administrate(player1_wrap, player2_wrap, player1_name, player2_name):
     ref = Referee(player1_wrap, player2_wrap, player1_name, player2_name)
     REF_WRAP = Ref_Wrapper(ref)
     winner, illegal = REF_WRAP.play_game()
+    print("winner", winner)
 
     return winner, illegal
 

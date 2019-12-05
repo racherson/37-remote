@@ -126,10 +126,6 @@ for player in players:
     rankings[player] = 0
     beaten[player] = []
 
-print("players", players)
-print("rankings", rankings)
-print("beaten", beaten)
-
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
     player_list = list(players.keys())

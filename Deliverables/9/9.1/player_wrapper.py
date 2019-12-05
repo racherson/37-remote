@@ -10,11 +10,13 @@ class Player_Wrapper:
 		self.player = Player1(name)
 
 	def reset_for_new_game(self):
+		print("resetting flags")
 		self.register_flag = False
 		self.receive_flag = False
 
 	def register(self):
 		if self.register_flag:
+			print(self.register_flag)
 			return GONE_CRAZY
 		self.register_flag = True
 		return self.player.register()

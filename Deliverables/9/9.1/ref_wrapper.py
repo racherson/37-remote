@@ -11,8 +11,6 @@ class Ref_Wrapper:
 		self.ref = ref
 
 	def set_players(self):
-		# if not isinstance(name1, str) or not isinstance(name2, str):
-		# 	raise Exception("Received invalid player name")
 		return self.ref.set_players()
 
 	def make_action(self, action):
