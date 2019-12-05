@@ -39,7 +39,7 @@ def create_default_player(name):
 # give players to admin to play a game
 def play_game(player, opponent, p_name, o_name):
     global players
-    winner, illegal, player_dict_updated, p_name, o_name = admin.administrate(player, opponent, p_name, o_name, players)
+    winner, illegal, player_dict_updated = admin.administrate(player, opponent, p_name, o_name, players)
     players = player_dict_updated
     if len(winner) == 2:
         winner = flip_coin(p_name, o_name)
@@ -52,7 +52,8 @@ def update_league(winner, loser, illegal):
     if illegal:
         players[loser]["ranking"] = 0
         default_player = create_default_player("replacement-default-player-" + str(curr_default_player_num))
-        players[default_player.register()] = {"player_obj": default_player, "ranking": 0, "beaten": []}
+        new_name = default_player.register()
+        players[new_name] = {"player_obj": default_player, "ranking": 0, "beaten": [], "name": new_name}
         # distribute points of loser
         for player_name in players[loser]["beaten"]:
             players[player_name]["ranking"] += 1
@@ -75,13 +76,14 @@ def scores_to_rankings():
     last_value = players[sorted_by_value[0]]["ranking"]
     ranked_dict = dict()
     for name in sorted_by_value:
+        actual_name = players[name]["name"]
         this_value = players[name]["ranking"]
         if this_value != last_value:
             rank += 1
         if rank in ranked_dict:
-            ranked_dict[rank].append(name)
+            ranked_dict[rank].append(actual_name)
         else:
-            ranked_dict[rank] = [name]
+            ranked_dict[rank] = [actual_name]
         last_value = this_value
     return ranked_dict
 
@@ -112,14 +114,16 @@ for i in range(num_players):
     accept_socket, address = sock.accept()
     accept_socket.settimeout(60)
     new_remote_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    players["remote-player-" + str(i)] = {"player_obj": new_remote_player, "ranking": 0, "beaten": []}
+    new_name = "remote-player-" + str(i)
+    players[new_name] = {"player_obj": new_remote_player, "ranking": 0, "beaten": [], "name": new_name}
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     new_default_player = create_default_player("default-player-" + str(curr_default_player_num))
-    players[new_default_player.register()] = {"player_obj": new_default_player, "ranking": 0, "beaten": []}
+    new_name = new_default_player.register()
+    players[new_name] = {"player_obj": new_default_player, "ranking": 0, "beaten": [], "name": new_name}
     num_players += 1
 
 # rankings = {}

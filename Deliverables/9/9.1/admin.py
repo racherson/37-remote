@@ -14,8 +14,7 @@ def administrate(player1_wrap, player2_wrap, player1_name, player2_name, player_
         if response == GONE_CRAZY:
             print("player1 register is gone crazy")
             return [player2_name], True
-        player_dict[response] = player_dict.pop(player1_name)
-        player1_name = response
+        player_dict[player1_name]["name"] = response
     except socket.error:
         return [player2_name]
 
@@ -24,8 +23,7 @@ def administrate(player1_wrap, player2_wrap, player1_name, player2_name, player_
         response = player2_wrap.register()
         if response == GONE_CRAZY:
             return [player1_name], True
-        player_dict[response] = player_dict.pop(player2_name)
-        player2_name = response
+        player_dict[player2_name]["name"] = response
     except socket.error:
         return [player1_name]
 
@@ -35,5 +33,5 @@ def administrate(player1_wrap, player2_wrap, player1_name, player2_name, player_
     winner, illegal = REF_WRAP.play_game()
     print("winner", winner)
 
-    return winner, illegal, player_dict, player1_name, player2_name
+    return winner, illegal, player_dict
 
