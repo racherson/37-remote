@@ -4,32 +4,30 @@ import socket
 from helpers import *
 
 
-def administrate(player1_wrap, player2_wrap, player1_name, player2_name):
+def administrate(player1_wrap, player2_wrap, player1_name, player2_name, player_names):
     player1_wrap.reset_for_new_game()
     player2_wrap.reset_for_new_game()
     # register players
     try:
-        print("registering player1")
         response = player1_wrap.register()
         if response == GONE_CRAZY:
-            print("player1 register is gone crazy")
-            return [player2_name], True
+            return [player2_name], True, player_names
+        player_names[player1_name] = response
     except socket.error:
-        return [player2_name]
+        return [player2_name], True, player_names
 
     try:
-        print("registering player2")
         response = player2_wrap.register()
         if response == GONE_CRAZY:
-            return [player1_name], True
+            return [player1_name], True, player_names
+        player_names[player2_name] = response
     except socket.error:
-        return [player1_name]
+        return [player1_name], True, player_names
 
     # give players to ref and ask it to play a game
     ref = Referee(player1_wrap, player2_wrap, player1_name, player2_name)
     REF_WRAP = Ref_Wrapper(ref)
     winner, illegal = REF_WRAP.play_game()
-    print("winner", winner)
 
-    return winner, illegal
+    return winner, illegal, player_names
 
