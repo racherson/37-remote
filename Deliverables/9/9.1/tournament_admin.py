@@ -18,11 +18,13 @@ def get_config():
     return config_data
 
 
-def add_player_to_tournament(player, name):
+def add_player_to_tournament(player, name, replacement):
     players[name] = player
     player_names[name] = name
     rankings[name] = 0
     beaten[name] = []
+    if not replacement:
+        player_list.append(name)
 
 
 def setup_from_config():
@@ -30,6 +32,7 @@ def setup_from_config():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((config_data["IP"], config_data["port"]))
+
     module = importlib.import_module(config_data["default-player"])
     DefaultPlayer = getattr(module, 'DefaultPlayerWrapper')
     return sock, DefaultPlayer
@@ -70,13 +73,17 @@ def play_game(player, opponent, p_name, o_name):
 def update_league(winner, loser, illegal):
     if illegal:
         rankings[loser] = 0
+        cheaters.add(loser)
         default_player, name = create_default_player(cheater=True)
-        players[loser] = default_player
+        # replace internal player name in player list
+        player_list[player_list.index(loser)] = name
+        # put the replacement player in everything else
+        add_player_to_tournament(default_player, name, replacement=True)
         # distribute points of loser
         for player_name in beaten[loser]:
-            rankings[player_name] += 1
+            if player_name not in cheaters:
+                rankings[player_name] += 1
         beaten[loser] = []
-        player_names[loser] = name
     else:
         beaten[winner[0]].append(loser)
     rankings[winner[0]] += 1
@@ -121,6 +128,8 @@ players = {}  # dictionary mapping player name to player objects
 player_names = {}  # dictionary mapping player names to registered names (actual names)
 rankings = {}  # mapping player names to scores
 beaten = {}  # mapping player names to names of players beaten
+player_list = []  # list of internal player names
+cheaters = set()  # set of all cheaters
 
 # make socket
 sock, DefaultPlayer = setup_from_config()
@@ -131,26 +140,24 @@ for i in range(num_players):
     accept_socket, address = sock.accept()
     accept_socket.settimeout(30)
     new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    add_player_to_tournament(new_player, "remote-player-" + str(i))
+    add_player_to_tournament(new_player, "remote-player-" + str(i), replacement=False)
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     new_player, new_name = create_default_player(cheater=False)
-    add_player_to_tournament(new_player, new_name)
+    add_player_to_tournament(new_player, new_name, replacement=False)
     num_players += 1
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
-    player_list = list(players.keys())
     for i in range(len(player_list)):
         for opponent in player_list[i+1:]:
             winner, loser, illegal = play_game(players[player_list[i]], players[opponent], player_list[i], opponent)
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:
-    player_list = list(players.keys())
     while len(player_list) > 1:
         player1 = player_list[0]
         player2 = player_list[1]

@@ -10,6 +10,9 @@ class Ref_Wrapper:
 	def __init__(self, ref):
 		self.ref = ref
 
+	def play_game(self):
+		return self.ref.play_game()
+
 	def set_players(self):
 		return self.ref.set_players()
 
@@ -31,6 +34,3 @@ class Ref_Wrapper:
 		if not isinstance(illegal_move, bool):
 			raise Exception("Received invalid arg illegal_move")
 		return self.ref.get_winner(illegal_move)
-
-	def play_game(self):
-		return self.ref.play_game()

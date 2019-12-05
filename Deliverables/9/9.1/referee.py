@@ -18,13 +18,6 @@ class Referee:
 		self.player1_name = player1_name
 		self.player2_name = player2_name
 
-	def get_action(self):
-		try:
-			move = self.current_turn.make_a_move(self.boards)
-			return move, False
-		except:
-			return self.get_winner(True)
-
 	def play_game(self):
 		players = self.set_players()
 		if len(players) != 2:  # crazy
@@ -36,6 +29,13 @@ class Referee:
 			action_made, illegal = self.make_action(action)
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
 				return action_made, illegal
+
+	def get_action(self):
+		try:
+			move = self.current_turn.make_a_move(self.boards)
+			return move, False
+		except:
+			return self.get_winner(True)
 
 	def set_players(self):
 		self.current_turn = self.PLAYER1_WRAP
