@@ -38,7 +38,9 @@ def create_default_player(name):
 
 # give players to admin to play a game
 def play_game(player, opponent, p_name, o_name):
-    winner, illegal = admin.administrate(player, opponent, p_name, o_name)
+    global players
+    winner, illegal, player_dict_updated, p_name, o_name = admin.administrate(player, opponent, p_name, o_name, players)
+    players = player_dict_updated
     if len(winner) == 2:
         winner = flip_coin(p_name, o_name)
     loser = get_loser(p_name, o_name, winner[0])
@@ -48,32 +50,32 @@ def play_game(player, opponent, p_name, o_name):
 def update_league(winner, loser, illegal):
     global curr_default_player_num
     if illegal:
-        rankings[loser] = 0
+        players[loser]["ranking"] = 0
         default_player = create_default_player("replacement-default-player-" + str(curr_default_player_num))
-        curr_default_player_num += 1
-        players[loser] = default_player
+        players[default_player.register()] = {"player_obj": default_player, "ranking": 0, "beaten": []}
         # distribute points of loser
-        for player_name in beaten[loser]:
-            rankings[player_name] += 1
-        beaten[loser] = []
+        for player_name in players[loser]["beaten"]:
+            players[player_name]["ranking"] += 1
+        players[loser]["beaten"] = []
+        del players[loser]
     else:
-        beaten[winner[0]].append(loser)
-    rankings[winner[0]] += 1
+        players[winner[0]]["beaten"].append(loser)
+    players[winner[0]]["ranking"] += 1
 
 
 def update_cup(winner, loser, illegal):
     if illegal:
-        rankings[loser] = 0
-    rankings[winner[0]] += 1
+        players[loser]["ranking"] = 0
+    players[winner[0]]["ranking"] += 1
 
 
 def scores_to_rankings():
-    sorted_by_value = sorted(rankings, key=lambda x: rankings[x], reverse=True)
+    sorted_by_value = sorted(players, key=lambda x: players[x]["ranking"], reverse=True)
     rank = 1
-    last_value = rankings[sorted_by_value[0]]
+    last_value = players[sorted_by_value[0]]["ranking"]
     ranked_dict = dict()
     for name in sorted_by_value:
-        this_value = rankings[name]
+        this_value = players[name]["ranking"]
         if this_value != last_value:
             rank += 1
         if rank in ranked_dict:
@@ -110,28 +112,29 @@ for i in range(num_players):
     accept_socket, address = sock.accept()
     accept_socket.settimeout(60)
     new_remote_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    players["remote-player-" + str(i)] = new_remote_player
+    players["remote-player-" + str(i)] = {"player_obj": new_remote_player, "ranking": 0, "beaten": []}
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     new_default_player = create_default_player("default-player-" + str(curr_default_player_num))
-    players[new_default_player.register()] = new_default_player
+    players[new_default_player.register()] = {"player_obj": new_default_player, "ranking": 0, "beaten": []}
     num_players += 1
 
-rankings = {}
-beaten = {}
-for player in players:
-    rankings[player] = 0
-    beaten[player] = []
+# rankings = {}
+# beaten = {}
+# for player in players:
+#     rankings[player] = 0
+#     beaten[player] = []
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
     player_list = list(players.keys())
     for i in range(len(player_list)):
         for opponent in player_list[i+1:]:
-            winner, loser, illegal, players = play_game(players[player_list[i]], players[opponent], player_list[i], opponent, players)
+            winner, loser, illegal = play_game(players[player_list[i]]["player_obj"], players[opponent]["player_obj"],
+                                               player_list[i], opponent)
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:
@@ -139,7 +142,7 @@ elif tournament_type == CUP:
     while len(player_list) > 1:
         player1 = player_list[0]
         player2 = player_list[1]
-        winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
+        winner, loser, illegal = play_game(players[player1]["player_obj"], players[player2]["player_obj"], player1, player2)
         update_cup(winner, loser, illegal)
         player_list.remove(loser)
 
