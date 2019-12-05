@@ -32,13 +32,16 @@ def get_loser(player1, player2, winner):
 
 
 def create_default_player(name):
+    global curr_default_player_num
     default_player = DefaultPlayer(name)
+    curr_default_player_num += 1
     return default_player
 
 
 # give players to admin to play a game
 def play_game(player, opponent, p_name, o_name):
-    winner, illegal = admin.administrate(player, opponent, p_name, o_name)
+    global player_names
+    winner, illegal, player_names = admin.administrate(player, opponent, p_name, o_name, player_names)
     if len(winner) == 2:
         winner = flip_coin(p_name, o_name)
     loser = get_loser(p_name, o_name, winner[0])
@@ -73,13 +76,14 @@ def scores_to_rankings():
     last_value = rankings[sorted_by_value[0]]
     ranked_dict = dict()
     for name in sorted_by_value:
+        actual_name = player_names[name]
         this_value = rankings[name]
         if this_value != last_value:
             rank += 1
         if rank in ranked_dict:
-            ranked_dict[rank].append(name)
+            ranked_dict[rank].append(actual_name)
         else:
-            ranked_dict[rank] = [name]
+            ranked_dict[rank] = [actual_name]
         last_value = this_value
     return ranked_dict
 
@@ -95,6 +99,7 @@ else:  # default
 num_players = int(sys.argv[2])
 # players is a dictionary mapping player name to player objects
 players = {}
+player_names = {}
 
 # make socket
 config_data = get_config()
@@ -110,14 +115,18 @@ for i in range(num_players):
     accept_socket, address = sock.accept()
     accept_socket.settimeout(60)
     new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    players[new_player.register()] = new_player
+    new_name = "remote-player-" + str(i)
+    players[new_name] = new_player
+    player_names[new_name] = new_name
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
-    new_player = create_default_player("default-player-" + str(curr_default_player_num))
-    players[new_player.register()] = new_player
+    new_name = "default-player-" + str(curr_default_player_num)
+    new_player = create_default_player(new_name)
+    players[new_name] = new_player
+    player_names[new_name] = new_name
     num_players += 1
 
 rankings = {}
@@ -137,11 +146,8 @@ if tournament_type == LEAGUE:
 elif tournament_type == CUP:
     player_list = list(players.keys())
     while len(player_list) > 1:
-        print(len(player_list))
         player1 = player_list[0]
         player2 = player_list[1]
-        # while player2 == player1:
-        #     player2 = player_list[random.randint(0, len(player_list) - 1)]
         winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
         update_cup(winner, loser, illegal)
         player_list.remove(loser)
