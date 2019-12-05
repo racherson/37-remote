@@ -9,8 +9,6 @@ import random
 import socket
 
 
-num_players = 0
-tournament_type = None
 curr_default_player_num = 0
 
 
@@ -18,6 +16,23 @@ def get_config():
     with open('go.config') as config_file:
         config_data = json.load(config_file)
     return config_data
+
+
+def add_player_to_tournament(player, name):
+    players[name] = player
+    player_names[name] = name
+    rankings[name] = 0
+    beaten[name] = []
+
+
+def setup_from_config():
+    config_data = get_config()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind((config_data["IP"], config_data["port"]))
+    module = importlib.import_module(config_data["default-player"])
+    DefaultPlayer = getattr(module, 'DefaultPlayerWrapper')
+    return sock, DefaultPlayer
 
 
 def flip_coin(player1_name, player2_name):
@@ -31,11 +46,15 @@ def get_loser(player1, player2, winner):
     return player1
 
 
-def create_default_player(name):
+def create_default_player(cheater):
     global curr_default_player_num
+    if cheater:
+        name = "replacement-default-player-" + str(curr_default_player_num)
+    else:
+        name = "default-player-" + str(curr_default_player_num)
     default_player = DefaultPlayer(name)
     curr_default_player_num += 1
-    return default_player
+    return default_player, name
 
 
 # give players to admin to play a game
@@ -49,16 +68,15 @@ def play_game(player, opponent, p_name, o_name):
 
 
 def update_league(winner, loser, illegal):
-    global curr_default_player_num
     if illegal:
         rankings[loser] = 0
-        default_player = create_default_player("replacement-default-player-" + str(curr_default_player_num))
-        curr_default_player_num += 1
+        default_player, name = create_default_player(cheater=True)
         players[loser] = default_player
         # distribute points of loser
         for player_name in beaten[loser]:
             rankings[player_name] += 1
         beaten[loser] = []
+        player_names[loser] = name
     else:
         beaten[winner[0]].append(loser)
     rankings[winner[0]] += 1
@@ -97,43 +115,31 @@ else:  # default
     tournament_type = LEAGUE
 
 num_players = int(sys.argv[2])
-# players is a dictionary mapping player name to player objects
-players = {}
-player_names = {}
+
+# create data structures for player data
+players = {}  # dictionary mapping player name to player objects
+player_names = {}  # dictionary mapping player names to registered names (actual names)
+rankings = {}  # mapping player names to scores
+beaten = {}  # mapping player names to names of players beaten
 
 # make socket
-config_data = get_config()
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock.bind((config_data["IP"], config_data["port"]))
-module = importlib.import_module(config_data["default-player"])
-DefaultPlayer = getattr(module, 'DefaultPlayerWrapper')
+sock, DefaultPlayer = setup_from_config()
 
 # connect remote players
 for i in range(num_players):
-    sock.listen(30)
+    sock.listen(1)
     accept_socket, address = sock.accept()
-    accept_socket.settimeout(60)
+    accept_socket.settimeout(30)
     new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    new_name = "remote-player-" + str(i)
-    players[new_name] = new_player
-    player_names[new_name] = new_name
+    add_player_to_tournament(new_player, "remote-player-" + str(i))
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
-    new_name = "default-player-" + str(curr_default_player_num)
-    new_player = create_default_player(new_name)
-    players[new_name] = new_player
-    player_names[new_name] = new_name
+    new_player, new_name = create_default_player(cheater=False)
+    add_player_to_tournament(new_player, new_name)
     num_players += 1
-
-rankings = {}
-beaten = {}
-for player in players:
-    rankings[player] = 0
-    beaten[player] = []
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
@@ -152,12 +158,14 @@ elif tournament_type == CUP:
         update_cup(winner, loser, illegal)
         player_list.remove(loser)
 
-else:
-    pass
 
 # stout the rankings dictionary
 sock.close()
 rank_dict = scores_to_rankings()
+print("Players:", players)
+print("Player names:", player_names)
+print("Scores:", rankings)
+print("Beaten:", beaten)
 print("Final Rankings:")
 for key, val in rank_dict.items():
     print(key, ": ", val)
