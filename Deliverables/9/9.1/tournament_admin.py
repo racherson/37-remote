@@ -46,6 +46,7 @@ def play_game(player, opponent, p_name, o_name):
 
 
 def update_league(winner, loser, illegal):
+    global curr_default_player_num
     if illegal:
         rankings[loser] = 0
         default_player = create_default_player("replacement-default-player-" + str(curr_default_player_num))
