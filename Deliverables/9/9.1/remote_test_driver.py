@@ -15,7 +15,6 @@ def get_response(request):
     if request[0] == "register":
         try:
             result = PLAYER_WRAP.register()
-            print("test driver result", result)
         except:
             result = GONE_CRAZY
     elif request[0] == "receive-stones":

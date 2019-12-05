@@ -106,18 +106,18 @@ DefaultPlayer = getattr(module, 'DefaultPlayerWrapper')
 
 # connect remote players
 for i in range(num_players):
-    sock.listen(30)
+    sock.listen(10)
     accept_socket, address = sock.accept()
     accept_socket.settimeout(60)
-    new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    players[new_player.register()] = new_player
+    new_remote_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
+    players["remote-player-" + str(i)] = new_remote_player
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
-    new_player = create_default_player("default-player-" + str(curr_default_player_num))
-    players[new_player.register()] = new_player
+    new_default_player = create_default_player("default-player-" + str(curr_default_player_num))
+    players[new_default_player.register()] = new_default_player
     num_players += 1
 
 rankings = {}
@@ -131,17 +131,14 @@ if tournament_type == LEAGUE:
     player_list = list(players.keys())
     for i in range(len(player_list)):
         for opponent in player_list[i+1:]:
-            winner, loser, illegal = play_game(players[player_list[i]], players[opponent], player_list[i], opponent)
+            winner, loser, illegal, players = play_game(players[player_list[i]], players[opponent], player_list[i], opponent, players)
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:
     player_list = list(players.keys())
     while len(player_list) > 1:
-        print(len(player_list))
         player1 = player_list[0]
         player2 = player_list[1]
-        # while player2 == player1:
-        #     player2 = player_list[random.randint(0, len(player_list) - 1)]
         winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
         update_cup(winner, loser, illegal)
         player_list.remove(loser)
