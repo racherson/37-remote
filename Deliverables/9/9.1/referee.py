@@ -8,13 +8,15 @@ PLAY_WRAP = PlayWrapper()
 
 # change this from a class to just a function?
 class Referee:
-	def __init__(self, remote_player, default_player):
+	def __init__(self, remote_player, default_player, player1_name, player2_name):
 		self.boards = [EMPTY_BOARD]
 		self.current_turn = None
 		self.num_passes = 0
 		self.REF_WRAP = Ref_Wrapper(self)
 		self.PLAYER1_WRAP = remote_player
 		self.PLAYER2_WRAP = default_player
+		self.player1_name = player1_name
+		self.player2_name = player2_name
 
 	def get_action(self):
 		try:
@@ -23,8 +25,8 @@ class Referee:
 		except:
 			return self.get_winner(True)
 
-	def play_game(self, player1, player2):
-		players = self.set_players(player1.get_name(), player2.get_name())
+	def play_game(self):
+		players = self.set_players()
 		if len(players) != 2:  # crazy
 			return players
 		while True:
@@ -35,10 +37,8 @@ class Referee:
 			if isinstance(action_made, str) or isinstance(action_made[0], str):
 				return action_made, illegal
 
-	def set_players(self, name1, name2):
+	def set_players(self):
 		self.current_turn = self.PLAYER1_WRAP
-		self.PLAYER1_WRAP.set_name(name1)
-		self.PLAYER2_WRAP.set_name(name2)
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except socket.error:
@@ -85,17 +85,18 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
-			winner_name = self.get_opponent_player().get_name()
+			winner_name = self.player_name(self.get_opponent_player())
 			self.notify_players_end_game()
 			return [winner_name], illegal_move
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:
 			self.notify_players_end_game()
-			return sorted([self.PLAYER1_WRAP.get_name(), self.PLAYER2_WRAP.get_name()]), illegal_move
+			return sorted([self.player1_name, self.player2_name]), illegal_move
 
 		winner = max(score, key=score.get)
 		self.notify_players_end_game()
-		return [self.current_turn.get_name()] if self.current_turn.get_color() == winner else [self.get_opponent_player().get_name()], illegal_move
+		return [self.player_name(self.current_turn)] if self.current_turn.get_color() == winner else\
+					[self.player_name(self.get_opponent_player())], illegal_move
 
 	def get_current_stone(self):
 		return self.current_turn.get_color()
@@ -105,6 +106,11 @@ class Referee:
 
 	def change_current_turn(self):
 		self.current_turn = self.get_opponent_player()
+
+	def player_name(self, player_wrap):
+		if player_wrap == self.PLAYER1_WRAP:
+			return self.player1_name
+		return self.player2_name
 
 	def notify_players_end_game(self):
 		self.PLAYER1_WRAP.end_game()

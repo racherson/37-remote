@@ -16,17 +16,17 @@ class Player:
 		self.name = "no name"
 		self.color = EMPTY
 
-	def set_name(self, name):
-		self.name = name
+	# def set_name(self, name):
+	# 	self.name = name
 
 	def register(self):
-		return self.get_name()
+		return self.name
 
 	def receive_stones(self, stone):
 		self.set_color(stone)
 
-	def get_name(self):
-		return self.name
+	# def get_name(self):
+	# 	return self.name
 
 	def set_color(self, color):
 		self.color = color
@@ -40,8 +40,9 @@ class Player:
 
 
 class Player1(Player):
-	def __init__(self):
+	def __init__(self, name):
 		super(Player1, self).__init__()
+		self.name = name
 
 	def make_a_move(self, boards):
 		history_is_good = PLAY_WRAP.check_history(boards, self.color)

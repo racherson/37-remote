@@ -22,12 +22,6 @@ class RemotePlayerWrapper:
         self.register_flag = False
         self.receive_flag = False
 
-    def get_name(self):
-        return self.name
-
-    def set_name(self, name):
-        self.name = name
-
     def get_color(self):
         return self.color
 
