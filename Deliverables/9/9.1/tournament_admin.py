@@ -161,9 +161,6 @@ elif tournament_type == CUP:
         player1 = cup_player_list[0]
         player2 = cup_player_list[1]
         winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
-        print("winner", winner)
-        print("loser", loser)
-        print("illegal", illegal)
         update_cup(winner, loser, illegal)
         cup_player_list.remove(loser)
 
