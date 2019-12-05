@@ -136,11 +136,12 @@ if tournament_type == LEAGUE:
 
 elif tournament_type == CUP:
     player_list = list(players.keys())
-    while len(players) > 1:
-        player1 = player_list[random.randint(0, len(player_list) - 1)]
-        player2 = player_list[random.randint(0, len(player_list) - 1)]
-        while player2 == player1:
-            player2 = player_list[random.randint(0, len(player_list) - 1)]
+    while len(player_list) > 1:
+        print(len(player_list))
+        player1 = player_list[0]
+        player2 = player_list[1]
+        # while player2 == player1:
+        #     player2 = player_list[random.randint(0, len(player_list) - 1)]
         winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
         update_cup(winner, loser, illegal)
         player_list.remove(loser)
