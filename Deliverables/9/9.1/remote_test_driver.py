@@ -1,6 +1,7 @@
 import socket
 import json
 from helpers import *
+from player_wrapper import Player_Wrapper
 from player import Player1
 
 
@@ -40,7 +41,8 @@ def try_to_connect(config):
         try_to_connect(config)
 
 
-PLAYER_WRAP = Player1()
+# PLAYER_WRAP = Player_Wrapper("hello")
+PLAYER_WRAP = Player1("hello")
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
 try_to_connect(config)
