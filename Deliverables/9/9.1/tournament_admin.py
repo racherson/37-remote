@@ -20,7 +20,6 @@ def get_config():
 
 def add_player_to_tournament(player, name, replacement):
     players[name] = player
-    player_names[name] = name
     rankings[name] = 0
     beaten[name] = []
     if not replacement:
@@ -38,8 +37,8 @@ def setup_from_config():
     return sock, DefaultPlayer
 
 
-def flip_coin(player1_name, player2_name):
-    arr = [player1_name, player2_name]
+def flip_coin(player1, player2):
+    arr = [player1, player2]
     return [arr[random.randint(0, 1)]]
 
 
@@ -62,8 +61,7 @@ def create_default_player(cheater):
 
 # give players to admin to play a game
 def play_game(player, opponent, p_name, o_name):
-    global player_names
-    winner, illegal, player_names = admin.administrate(player, opponent, p_name, o_name, player_names)
+    winner, illegal = admin.administrate(player, opponent, p_name, o_name)
     if len(winner) == 2:
         winner = flip_coin(p_name, o_name)
     loser = get_loser(p_name, o_name, winner[0])
@@ -100,14 +98,13 @@ def scores_to_rankings():
     last_value = rankings[sorted_by_value[0]]
     ranked_dict = dict()
     for name in sorted_by_value:
-        actual_name = player_names[name]
         this_value = rankings[name]
         if this_value != last_value:
             rank += 1
         if rank in ranked_dict:
-            ranked_dict[rank].append(actual_name)
+            ranked_dict[rank].append(name)
         else:
-            ranked_dict[rank] = [actual_name]
+            ranked_dict[rank] = [name]
         last_value = this_value
     return ranked_dict
 
@@ -117,17 +114,16 @@ if sys.argv[1] == LEAGUE:
     tournament_type = LEAGUE
 elif sys.argv[1] == CUP:
     tournament_type = CUP
-else:  # default
-    tournament_type = LEAGUE
+else:
+    raise InvalidTournamentType("Invalid tournament type.")
 
 num_players = int(sys.argv[2])
 
 # create data structures for player data
 players = {}  # dictionary mapping player name to player objects
-player_names = {}  # dictionary mapping player names to registered names (actual names)
 rankings = {}  # mapping player names to scores
 beaten = {}  # mapping player names to names of players beaten
-player_list = []  # list of internal player names
+player_list = []  # list of active players
 
 # make socket
 sock, DefaultPlayer = setup_from_config()
@@ -136,17 +132,26 @@ sock, DefaultPlayer = setup_from_config()
 for i in range(num_players):
     sock.listen(1)
     accept_socket, address = sock.accept()
-    accept_socket.settimeout(30)
+    accept_socket.settimeout(60)
     new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    add_player_to_tournament(new_player, "remote-player-" + str(i), replacement=False)
+    try:
+        new_player_name = new_player.register()
+        if new_player_name == GONE_CRAZY:
+            new_player, new_player_name = create_default_player(cheater=False)
+    except socket.error:
+        new_player, new_player_name = create_default_player(cheater=False)
+    add_player_to_tournament(new_player, new_player_name, replacement=False)
 
 num_remote = num_players
 
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     new_player, new_name = create_default_player(cheater=False)
+    new_player.register()
     add_player_to_tournament(new_player, new_name, replacement=False)
     num_players += 1
+
+print("player_list", player_list)
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
@@ -156,13 +161,12 @@ if tournament_type == LEAGUE:
             update_league(winner, loser, illegal)
 
 elif tournament_type == CUP:
-    cup_player_list = list(players.keys())
-    while len(cup_player_list) > 1:
-        player1 = cup_player_list[0]
-        player2 = cup_player_list[1]
+    while len(player_list) > 1:
+        player1 = player_list[0]
+        player2 = player_list[1]
         winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
         update_cup(winner, loser, illegal)
-        cup_player_list.remove(loser)
+        player_list.remove(loser)
 
 
 # stout the rankings dictionary

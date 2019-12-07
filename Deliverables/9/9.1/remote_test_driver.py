@@ -45,7 +45,6 @@ def try_to_connect(config):
         try_to_connect(config)
 
 
-# PLAYER_WRAP = Player_Wrapper("hello")
 PLAYER_WRAP = Player1("Rachel")
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 config = get_config()
@@ -53,11 +52,11 @@ print("trying to connect")
 try_to_connect(config)
 
 while True:
-    try:
-        request = json.loads(sock.recv(recv_size).decode())
-        print("Request from server:", request[0])
-    except:
-        break
+    # try:
+    request = json.loads(sock.recv(recv_size).decode())
+    print("Request from server:", request[0])
+    # except:
+    #     break
     response = get_response(request)
     if response:
         sock.send(json.dumps(response).encode())

@@ -19,19 +19,24 @@ EXCEPTIONS
 class InvalidPoint(Exception):
 	pass
 
+
 class InvalidBoard(Exception):
 	pass
+
 
 class InvalidStone(Exception):
 	pass
 
-class InvalidMaybeStone(Exception):
-	pass
 
 class InvalidMove(Exception):
 	pass
 
+
 class NoDataReceived(Exception):
+	pass
+
+
+class InvalidTournamentType(Exception):
 	pass
 
 
