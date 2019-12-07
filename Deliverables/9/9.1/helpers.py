@@ -1,7 +1,7 @@
 '''
 CONSTANTS
 '''
-BOARD_SIZE = 19
+BOARD_SIZE = 3
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
@@ -28,9 +28,6 @@ class InvalidMaybeStone(Exception):
 	pass
 
 class InvalidMove(Exception):
-	pass
-
-class NoDataReceived(Exception):
 	pass
 
 '''
