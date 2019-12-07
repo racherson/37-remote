@@ -85,7 +85,7 @@ class Player2(Player):
 					return [row, col]
 		return "pass"
 
-#random player (valid, invalid)
+
 class Player3(Player):
 
 	def __init__(self):
