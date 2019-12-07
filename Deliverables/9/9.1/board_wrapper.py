@@ -6,7 +6,6 @@ class BoardWrapper:
 
 	def __init__(self):
 		pass
-
 	'''
 	OCCUPIED
 	checks parameters, calls inner board
@@ -68,10 +67,7 @@ class BoardWrapper:
 	def get_points(self, board, maybe_stone):
 		self.check_board(board)
 		self.check_stone(maybe_stone)
-		points = b.get_points(board, maybe_stone)
-		str_points = [self.point_to_string(point) for point in points]
-		str_points.sort()
-		return str_points
+		return b.get_points(board, maybe_stone)
 
 	'''
 	STRING_TO_POINT
@@ -81,19 +77,9 @@ class BoardWrapper:
 		if isinstance(point, str):
 			point = point.strip('\"')
 			str_arr = point.split("-")
-			try:
-				int_arr = [int(coord) for coord in str_arr]
-			except ValueError:
-				raise InvalidPoint('Received invalid point.')
+			int_arr = [int(coord) for coord in str_arr]
 			return [int_arr[1]-1, int_arr[0]-1]
 		return point
-
-	'''
-	POINT_TO_STRING
-	takes [x,y] point, converts to "x-y" point and returns
-	'''
-	def point_to_string(self, point):
-		return str(point[0]+1)+"-"+str(point[1]+1)
 
 	'''
 	CHECK_BOARD
@@ -104,17 +90,16 @@ class BoardWrapper:
 	def check_board(self, board):
 		# check number of rows
 		if len(board) != BOARD_SIZE:
-			# raise Exception('Board must contain 19 rows.')
-			raise InvalidBoard('Board must contain 19 rows.')
+			raise Exception('Board must contain 19 rows.')
 
 		# check length of all rows (because python is fake)
 		# check board only has valid stones, maybestones
 		for row in board:
 			if len(row) != BOARD_SIZE:
-				raise InvalidBoard('Board must be 19 columns wide.')
+				raise Exception('Board must be 19 columns wide.')
 			for item in row:
 				if item != " " and item != 'B' and item != 'W':
-					raise InvalidBoard('Board contains invalid stones.')
+					raise Exception('Board contains invalid stones.')
 		return True
 
 	'''
@@ -126,16 +111,15 @@ class BoardWrapper:
 	def check_point(self, point):
 		# check length
 		if len(point) != 2:
-			raise InvalidPoint('Received invalid point.')
+			raise Exception('Received invalid point.')
 
 		# make sure both coords are ints
 		if not isinstance(point[0],int) or not isinstance(point[1],int):
-			raise InvalidPoint('Received invalid point.')
+			raise Exception('Received invalid point.')
 
 		# check coords in range
 		if point[0] < 0 or point[0] > BOARD_SIZE-1 or point[1] < 0 or point[1] > BOARD_SIZE-1:
-			# raise Exception('Received invalid point.')
-			raise InvalidPoint('Received invalid point.')
+			raise Exception('Received invalid point.')
 
 		return True
 
@@ -146,8 +130,8 @@ class BoardWrapper:
 	returns True if valid, raises exception if not
 	'''
 	def check_stone(self,stone):
-		if stone != EMPTY and stone != BLACK and stone != WHITE:
-			raise InvalidStone('Received invalid Stone or MaybeStone.')
+		if stone != ' ' and stone != 'B' and stone != 'W':
+			raise Exception('Received invalid Stone or MaybeStone.')
 		return True
 
 

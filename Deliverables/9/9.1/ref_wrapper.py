@@ -21,8 +21,8 @@ class Ref_Wrapper:
 			try:
 				action = BOARD_WRAP.string_to_point(action)
 				BOARD_WRAP.check_point(action)
-			except InvalidPoint:
-				raise InvalidMove("Received invalid move")
+			except:
+				raise Exception("Received invalid move")
 
 		return self.ref.make_action(action)
 
@@ -32,5 +32,5 @@ class Ref_Wrapper:
 
 	def get_winner(self, illegal_move):
 		if not isinstance(illegal_move, bool):
-			raise ValueError("Received invalid arg illegal_move")
+			raise Exception("Received invalid arg illegal_move")
 		return self.ref.get_winner(illegal_move)

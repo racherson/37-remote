@@ -1,3 +1,4 @@
+# play
 from board_wrapper import BoardWrapper
 import copy
 from helpers import *
@@ -18,6 +19,7 @@ def action(act):
 		if check_history(boards, stone):
 			return play(stone, point, boards)
 		return False
+
 
 '''
 PLAY
@@ -55,39 +57,30 @@ expects array of 1-3 boards, stone
 returns true if history is valid, false otherwise
 '''
 def check_history(boards, stone):
-	if not check_valid_board(boards[0]):
-			return False
-
 	if len(boards) == 1:
 		return is_board_empty(boards[0]) and stone == BLACK
 
-
-	if not check_valid_board(boards[1]):
+	if not check_alternating(stone, boards):
 		return False
 
 	if len(boards) == 2:
-		if not check_alternating(stone,boards[0], boards[1]):
-			return False
 		if stone == BLACK:
 			return False
 		if not is_board_empty(boards[1]):
 			return False
-		if not len(BOARD_WRAP.get_points(boards[0], WHITE)) == 0:
-			return False
-		if not len(BOARD_WRAP.get_points(boards[0], BLACK)) <= 1:
-			return False
 
-		return True
+		return len(BOARD_WRAP.get_points(boards[0], WHITE)) == 0 and len(BOARD_WRAP.get_points(boards[0], BLACK)) <= 1
 
-	if not check_valid_board(boards[2]):
-			return False
 	if len(boards) == 3:
-		if not check_alternating(stone, boards[0], boards[1]) or not check_alternating(stone,boards[1],boards[2]):
+		if not check_valid_board(boards[2]):
 			return False
+
 		if boards[0] == boards[1] == boards[2] or boards[0] == boards[2]:
 			return False
+
 		if is_board_empty(boards[1]) and is_board_empty(boards[2]) and len(BOARD_WRAP.get_points(boards[0], BLACK)) > len(BOARD_WRAP.get_points(boards[0], WHITE)):
 			return False
+
 		if not check_turn(stone, boards[2], boards[1]) or not check_turn(get_opponent(stone), boards[1], boards[0]):
 			return False
 
@@ -99,33 +92,20 @@ CHECK_ALTERNATING
 expects array of 1-3 boards, current turn's stone
 returns true if the players alternated, false otherwise
 '''
-# def check_alternating(stone, boards):
-# 	num_boards = len(boards)
+def check_alternating(stone, boards):
+	num_boards = len(boards)
 
-# 	if num_boards == 2 or num_boards == 3:
-# 		opp_diff = len(BOARD_WRAP.get_points(boards[0], get_opponent(stone))) - len(BOARD_WRAP.get_points(boards[1], get_opponent(stone)))
-# 		stone_diff = len(BOARD_WRAP.get_points(boards[0], stone)) - len(BOARD_WRAP.get_points(boards[1], stone))
-# 		if (opp_diff != 1 and opp_diff != 0) or stone_diff > 0:
-# 			return False
+	if num_boards == 2 or num_boards == 3:
+		opp_diff = len(BOARD_WRAP.get_points(boards[0], get_opponent(stone))) - len(BOARD_WRAP.get_points(boards[1], get_opponent(stone)))
+		stone_diff = len(BOARD_WRAP.get_points(boards[0], stone)) - len(BOARD_WRAP.get_points(boards[1], stone))
+		if (opp_diff != 1 and opp_diff != 0) or stone_diff > 0:
+			return False
 
-# 		if num_boards == 3:
-# 			opp_diff = len(BOARD_WRAP.get_points(boards[1], get_opponent(stone))) - len(BOARD_WRAP.get_points(boards[2], get_opponent(stone)))
-# 			stone_diff = len(BOARD_WRAP.get_points(boards[1], stone)) - len(BOARD_WRAP.get_points(boards[2], stone))
-# 			if (stone_diff != 1 and stone_diff != 0) or opp_diff > 0:
-# 				return False
-# 	return True
-
-'''
-CHECK_ALTERNATING
-expects array of 1-3 boards, current turn's stone
-returns true if the players alternated, false otherwise
-'''
-def check_alternating(stone, board1, board2):
-	opp_diff = len(BOARD_WRAP.get_points(board1, get_opponent(stone))) - len(BOARD_WRAP.get_points(board2, get_opponent(stone)))
-	stone_diff = len(BOARD_WRAP.get_points(board1, stone)) - len(BOARD_WRAP.get_points(board2, stone))
-	if (opp_diff != 1 and opp_diff != 0) or stone_diff > 0:
-		return False
-
+		if num_boards == 3:
+			opp_diff = len(BOARD_WRAP.get_points(boards[1], get_opponent(stone))) - len(BOARD_WRAP.get_points(boards[2], get_opponent(stone)))
+			stone_diff = len(BOARD_WRAP.get_points(boards[1], stone)) - len(BOARD_WRAP.get_points(boards[2], stone))
+			if (stone_diff != 1 and stone_diff != 0) or opp_diff > 0:
+				return False
 	return True
 
 
