@@ -24,6 +24,7 @@ class Referee:
 			return players
 		while True:
 			action, illegal = self.get_action()
+			print(action)
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
@@ -85,6 +86,7 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
+			print("cheater!")
 			winner_name = self.player_name(self.get_opponent_player())
 			self.notify_players_end_game()
 			return [winner_name], illegal_move

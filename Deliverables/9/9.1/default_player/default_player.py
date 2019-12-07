@@ -17,6 +17,7 @@ class DefaultPlayerWrapper:
 		if self.register_flag:
 			return GONE_CRAZY
 		self.register_flag = True
+		print("registering a default player")
 		return self.player.register()
 
 	def receive_stones(self, stone):

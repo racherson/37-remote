@@ -12,8 +12,8 @@ BOARD_WRAP = BoardWrapper()
 
 class Player:
 
-	def __init__(self):
-		self.name = "no name"
+	def __init__(self, name):
+		self.name = name
 		self.color = EMPTY
 
 	def register(self):
@@ -35,8 +35,7 @@ class Player:
 
 class Player1(Player):
 	def __init__(self, name):
-		super(Player1, self).__init__()
-		self.name = name
+		super(Player1, self).__init__(name)
 
 	def make_a_move(self, boards):
 		history_is_good = PLAY_WRAP.check_history(boards, self.color)
@@ -52,8 +51,8 @@ class Player1(Player):
 
 class Player2(Player):
 
-	def __init__(self):
-		super(Player2, self).__init__()
+	def __init__(self, name):
+		super(Player2, self).__init__(name)
 		self.n = None
 		with open('go-player.config') as config_file:
 			n = json.load(config_file)
@@ -88,8 +87,8 @@ class Player2(Player):
 
 class Player3(Player):
 
-	def __init__(self):
-		super(Player3, self).__init__()
+	def __init__(self, name):
+		super(Player3, self).__init__(name)
 
 	def make_a_move(self, boards):
 		row = random.randint(0, BOARD_SIZE)
