@@ -56,7 +56,7 @@ returns true if history is valid, false otherwise
 '''
 def check_history(boards, stone):
 	if not check_valid_board(boards[0]):
-			return False
+		return False
 
 	if len(boards) == 1:
 		return is_board_empty(boards[0]) and stone == BLACK
@@ -82,7 +82,7 @@ def check_history(boards, stone):
 	if not check_valid_board(boards[2]):
 			return False
 	if len(boards) == 3:
-		if not check_alternating(stone, boards[0], boards[1]) or not check_alternating(stone,boards[1],boards[2]):
+		if not check_alternating(stone, boards[0], boards[1]) or not check_alternating(stone,boards[2],boards[1]):
 			return False
 		if boards[0] == boards[1] == boards[2] or boards[0] == boards[2]:
 			return False
@@ -90,7 +90,6 @@ def check_history(boards, stone):
 			return False
 		if not check_turn(stone, boards[2], boards[1]) or not check_turn(get_opponent(stone), boards[1], boards[0]):
 			return False
-
 	return True
 
 
