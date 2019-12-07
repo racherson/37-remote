@@ -55,5 +55,8 @@ def get_points(board, maybe_stone):
 		for j in range(0, BOARD_SIZE):
 			if board[j][i] == maybe_stone:
 				points.append(str(i+1)+"-"+str(j+1))
-	points.sort()
+				points.sort()
+				# points.append([i,j])
+				#points.append(str(i+1)+"-"+str(j+1))
+	#points.sort()
 	return points
