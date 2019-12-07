@@ -31,11 +31,11 @@ class Referee:
 				return action_made, illegal
 
 	def get_action(self):
-		try:
-			move = self.current_turn.make_a_move(self.boards)
-			return move, False
-		except:
-			return self.get_winner(True)
+		# try:
+		move = self.current_turn.make_a_move(self.boards)
+		return move, False
+		# except:
+		# 	return self.get_winner(True)
 
 	def set_players(self):
 		self.current_turn = self.PLAYER1_WRAP
