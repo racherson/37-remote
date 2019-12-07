@@ -63,12 +63,9 @@ def check_history(boards, stone):
 	if len(boards) == 1:
 		return is_board_empty(boards[0]) and stone == BLACK
 
-<<<<<<< HEAD
 	if not check_alternating(stone, boards):
-=======
 
 	if not check_valid_board(boards[1]):
->>>>>>> 1369540ff012c878a08ab0db142766059e2b92b3
 		return False
 
 	if len(boards) == 2:
@@ -85,15 +82,12 @@ def check_history(boards, stone):
 
 		return True
 
-<<<<<<< HEAD
 	if len(boards) == 3:
 		if not check_valid_board(boards[2]):
-=======
 	if not check_valid_board(boards[2]):
 			return False
 	if len(boards) == 3:
 		if not check_alternating(stone, boards[0], boards[1]) or not check_alternating(stone,boards[2],boards[1]):
->>>>>>> 1369540ff012c878a08ab0db142766059e2b92b3
 			return False
 		if boards[0] == boards[1] == boards[2] or boards[0] == boards[2]:
 			return False
