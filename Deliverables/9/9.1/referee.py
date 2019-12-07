@@ -24,7 +24,6 @@ class Referee:
 			return players
 		while True:
 			action, illegal = self.get_action()
-			print(action)
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
