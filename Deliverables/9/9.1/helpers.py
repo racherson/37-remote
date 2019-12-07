@@ -1,4 +1,4 @@
-BOARD_SIZE = 3
+BOARD_SIZE = 9
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
