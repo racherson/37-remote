@@ -96,22 +96,6 @@ CHECK_ALTERNATING
 expects array of 1-3 boards, current turn's stone
 returns true if the players alternated, false otherwise
 '''
-# def check_alternating(stone, boards):
-# 	num_boards = len(boards)
-
-# 	if num_boards == 2 or num_boards == 3:
-# 		opp_diff = len(BOARD_WRAP.get_points(boards[0], get_opponent(stone))) - len(BOARD_WRAP.get_points(boards[1], get_opponent(stone)))
-# 		stone_diff = len(BOARD_WRAP.get_points(boards[0], stone)) - len(BOARD_WRAP.get_points(boards[1], stone))
-# 		if (opp_diff != 1 and opp_diff != 0) or stone_diff > 0:
-# 			return False
-
-# 		if num_boards == 3:
-# 			opp_diff = len(BOARD_WRAP.get_points(boards[1], get_opponent(stone))) - len(BOARD_WRAP.get_points(boards[2], get_opponent(stone)))
-# 			stone_diff = len(BOARD_WRAP.get_points(boards[1], stone)) - len(BOARD_WRAP.get_points(boards[2], stone))
-# 			if (stone_diff != 1 and stone_diff != 0) or opp_diff > 0:
-# 				return False
-# 	return True
-
 def check_alternating(stone, board1, board2):
 	opp_diff = len(BOARD_WRAP.get_points(board1, get_opponent(stone))) - len(BOARD_WRAP.get_points(board2, get_opponent(stone)))
 	stone_diff = len(BOARD_WRAP.get_points(board1, stone)) - len(BOARD_WRAP.get_points(board2, stone))

@@ -1,3 +1,7 @@
+'''
+CONSTANTS
+'''
+
 BOARD_SIZE = 9
 WHITE = 'W'
 BLACK = 'B'
@@ -12,23 +16,23 @@ recv_size = 4096
 '''
 EXCEPTIONS
 '''
-# class InvalidPoint(Exception):
-# 	pass
+class InvalidPoint(Exception):
+	pass
 
-# class InvalidBoard(Exception):
-# 	pass
+class InvalidBoard(Exception):
+	pass
 
-# class InvalidStone(Exception):
-# 	pass
+class InvalidStone(Exception):
+	pass
 
-# class InvalidMaybeStone(Exception):
-# 	pass
+class InvalidMaybeStone(Exception):
+	pass
 
-# class InvalidMove(Exception):
-# 	pass
+class InvalidMove(Exception):
+	pass
 
-# class NoDataReceived(Exception):
-# 	pass
+class NoDataReceived(Exception):
+	pass
 
 
 '''
@@ -56,5 +60,10 @@ def is_board_empty(board):
 	return True
 
 
+'''
+IS_BOARD
+helper
+expects board, returns true if valid size, false otherwise
+'''
 def is_board(board):
 	return len(board) == BOARD_SIZE and len(board[0]) == BOARD_SIZE
