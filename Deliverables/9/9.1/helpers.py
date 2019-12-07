@@ -1,4 +1,4 @@
-BOARD_SIZE = 9
+BOARD_SIZE = 3
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
@@ -12,23 +12,23 @@ recv_size = 4096
 '''
 EXCEPTIONS
 '''
-class InvalidPoint(Exception):
-	pass
+# class InvalidPoint(Exception):
+# 	pass
 
-class InvalidBoard(Exception):
-	pass
+# class InvalidBoard(Exception):
+# 	pass
 
-class InvalidStone(Exception):
-	pass
+# class InvalidStone(Exception):
+# 	pass
 
-class InvalidMaybeStone(Exception):
-	pass
+# class InvalidMaybeStone(Exception):
+# 	pass
 
-class InvalidMove(Exception):
-	pass
+# class InvalidMove(Exception):
+# 	pass
 
-class NoDataReceived(Exception):
-	pass
+# class NoDataReceived(Exception):
+# 	pass
 
 
 '''

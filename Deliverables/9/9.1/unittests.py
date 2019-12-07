@@ -46,14 +46,14 @@ class Test_Board(unittest.TestCase):
 		self.assertEqual(b.occupied(board,"1-1"), True)
 		self.assertEqual(b.occupied(board,[2,2]), False)
 		self.assertEqual(b.occupied(board,"3-3"), False)
-		self.assertRaises(InvalidPoint, b.occupied, board, "5-5")
+		self.assertRaises(Exception, b.occupied, board, "5-5")
 
 	def test_occupies(self):
 		self.assertEqual(b.occupies(board, BLACK, "1-1"), True)
 		self.assertEqual(b.occupies(board, BLACK, [0,0]), True)
-		self.assertRaises(InvalidPoint, b.occupies, board, BLACK, "5,5")
-		self.assertRaises(InvalidBoard, b.occupies, [1], BLACK, "1-1")
-		self.assertRaises(InvalidStone, b.occupies, board, "black", "1-1")
+		self.assertRaises(Exception, b.occupies, board, BLACK, "5,5")
+		self.assertRaises(Exception, b.occupies, [1], BLACK, "1-1")
+		self.assertRaises(Exception, b.occupies, board, "black", "1-1")
 
 	def test_place(self):
 		self.assertEqual(b.place(board, BLACK, "1-1"), "This seat is taken!")
