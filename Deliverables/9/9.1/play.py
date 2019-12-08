@@ -9,12 +9,12 @@ ACTION
 expects act = [Stone,Move]
 '''
 def action(act):
-	stone,move = act
+	stone, move = act
 
 	if move == "pass":
 		return True
 
-	else: # move is play
+	else:  # move is play
 		point, boards = move
 		if check_history(boards, stone):
 			return play(stone, point, boards)

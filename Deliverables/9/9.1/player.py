@@ -21,6 +21,7 @@ class Player:
 
 	def receive_stones(self, stone):
 		self.set_color(stone)
+		return None
 
 	def set_color(self, color):
 		self.color = color
@@ -45,7 +46,6 @@ class Player1(Player):
 					if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)):
 						return [row, col]
 			return "pass"
-
 		return "This history makes no sense!"
 
 

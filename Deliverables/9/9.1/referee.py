@@ -46,20 +46,20 @@ class Referee:
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except socket.error:
-			print("receive stones for p1 failed")
+			print("player 1 couldn't receive stones")
 			return self.get_winner(True)
 		if received:
-			print("receive stones for p1 response", received)
+			print("receive stones for p1 is crazy")
 			return self.get_winner(True)
 
 		try:
 			received = self.PLAYER2_WRAP.receive_stones(WHITE)
 		except socket.error:
-			print("receive stones for p2 failed")
+			print("player 2 couldn't receive stones")
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:
-			print("receive stones for p2 response", received)
+			print("receive stones for p2 is crazy")
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		return self.PLAYER1_WRAP.get_color(), self.PLAYER2_WRAP.get_color()
@@ -93,10 +93,9 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
-			print("cheater!")
+			print("We have a cheater")
 			winner_name = self.player_name(self.get_opponent_player())
 			self.notify_players_end_game()
-			print("winner", winner_name)
 			return [winner_name], illegal_move
 		score = PLAY_WRAP.score(self.boards[0])
 		if score[BLACK] == score[WHITE]:

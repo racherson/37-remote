@@ -21,7 +21,6 @@ class DefaultPlayerWrapper:
 
 	def receive_stones(self, stone):
 		if self.receive_flag or not self.register_flag:
-			print("default player gone crazy when receiving stones")
 			return GONE_CRAZY
 		self.receive_flag = True
 		self.player.set_color(stone)
