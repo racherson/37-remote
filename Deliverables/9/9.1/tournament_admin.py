@@ -57,6 +57,7 @@ def create_default_player(cheater):
         name = "default-player-" + str(curr_default_player_num)
     default_player = DefaultPlayer(name)
     curr_default_player_num += 1
+    default_player.register()
     return default_player, name
 
 
@@ -154,8 +155,6 @@ num_remote = num_players
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     new_player, new_name = create_default_player(cheater=False)
     print("new default player")
-    new_player.register()
-    print("default player registered")
     add_player_to_tournament(new_player, new_name, replacement=False)
     num_players += 1
 
