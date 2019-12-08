@@ -19,6 +19,7 @@ def get_config():
 
 
 def add_player_to_tournament(player, name, replacement):
+    print("adding player to data structures")
     players[name] = player
     rankings[name] = 0
     beaten[name] = []
@@ -130,15 +131,20 @@ sock, DefaultPlayer = setup_from_config()
 
 # connect remote players
 for i in range(num_players):
-    sock.listen(1)
+    sock.listen(10)
     accept_socket, address = sock.accept()
-    accept_socket.settimeout(60)
+    print("server accepted a socket")
+    accept_socket.settimeout(30)
     new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
+    print("new remote player wrapper")
     try:
         new_player_name = new_player.register()
+        print("new player name", new_player_name)
         if new_player_name == GONE_CRAZY:
+            print("remote player gone crazy")
             new_player, new_player_name = create_default_player(cheater=False)
     except socket.error:
+        print("remote player socket error")
         new_player, new_player_name = create_default_player(cheater=False)
     add_player_to_tournament(new_player, new_player_name, replacement=False)
 
@@ -147,7 +153,9 @@ num_remote = num_players
 # add extra default players if needed
 while math.log2(num_players) % 1 != 0 or num_players == 1:
     new_player, new_name = create_default_player(cheater=False)
+    print("new default player")
     new_player.register()
+    print("default player registered")
     add_player_to_tournament(new_player, new_name, replacement=False)
     num_players += 1
 
@@ -155,6 +163,7 @@ print("player_list", player_list)
 
 # play pair players as determined by tournament type
 if tournament_type == LEAGUE:
+    print("league tourney")
     for i in range(len(player_list)):
         for opponent in player_list[i+1:]:
             winner, loser, illegal = play_game(players[player_list[i]], players[opponent], player_list[i], opponent)
@@ -170,6 +179,7 @@ elif tournament_type == CUP:
 
 
 # stout the rankings dictionary
+print("close socket")
 sock.close()
 rank_dict = scores_to_rankings()
 print("Final Rankings:")
