@@ -19,7 +19,6 @@ class RemotePlayerWrapper:
         self.accept_socket = accept_socket
 
     def reset_for_new_game(self):
-        self.register_flag = False
         self.receive_flag = False
 
     def get_color(self):
@@ -31,7 +30,7 @@ class RemotePlayerWrapper:
             data = self.accept_socket.recv(recv_size)
             request = json.loads(data.decode())
         except (socket.error, socket.timeout):
-            raise Exception("No data received")
+            raise NoDataReceived("No data received")
         if isinstance(request, str):
             request = request.strip('\"')
         return request
@@ -43,6 +42,7 @@ class RemotePlayerWrapper:
         self.accept_socket.send(json.dumps(["register"]).encode())
         try:
             response = self.receive_response()
+            print("registering a remote player")
             return response
         except socket.error:
             return GONE_CRAZY
