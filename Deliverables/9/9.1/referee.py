@@ -22,8 +22,11 @@ class Referee:
 		players = self.set_players()
 		if len(players) != 2:  # crazy
 			return players
+		if isinstance(players[1], bool):
+			return players
 		while True:
 			action, illegal = self.get_action()
+			print(action, illegal)
 			if isinstance(action[0], str) and len(action) < 3:
 				return action, illegal
 			action_made, illegal = self.make_action(action)
@@ -35,6 +38,7 @@ class Referee:
 			move = self.current_turn.make_a_move(self.boards)
 			return move, False
 		except:
+			print("get action failed")
 			return self.get_winner(True)
 
 	def set_players(self):
@@ -42,16 +46,20 @@ class Referee:
 		try:
 			received = self.PLAYER1_WRAP.receive_stones(BLACK)
 		except socket.error:
+			print("player 1 couldn't receive stones")
 			return self.get_winner(True)
 		if received:
+			print("receive stones for p1 is crazy")
 			return self.get_winner(True)
 
 		try:
 			received = self.PLAYER2_WRAP.receive_stones(WHITE)
 		except socket.error:
+			print("player 2 couldn't receive stones")
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		if received:
+			print("receive stones for p2 is crazy")
 			self.current_turn = self.PLAYER2_WRAP
 			return self.get_winner(True)
 		return self.PLAYER1_WRAP.get_color(), self.PLAYER2_WRAP.get_color()
@@ -85,6 +93,7 @@ class Referee:
 
 	def get_winner(self, illegal_move):
 		if illegal_move:
+			print("We have a cheater")
 			winner_name = self.player_name(self.get_opponent_player())
 			self.notify_players_end_game()
 			return [winner_name], illegal_move
