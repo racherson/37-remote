@@ -49,7 +49,7 @@ def try_to_connect(config):
         try_to_connect(config)
 
 
-PLAYER_WRAP = Player1("Rachel" + str(random.randint(0, 10)))
+PLAYER_WRAP = Player1("Rachel" + str(random.randint(0, 50)))
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.settimeout(10)
 config = get_config()

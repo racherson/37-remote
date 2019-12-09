@@ -10,6 +10,11 @@ import socket
 
 
 curr_default_player_num = 0
+# create data structures for player data
+players = {}  # dictionary mapping player name to player objects
+rankings = {}  # mapping player names to scores
+beaten = {}  # mapping player names to names of players beaten
+player_list = []  # list of active players
 
 
 def get_config():
@@ -37,6 +42,33 @@ def setup_from_config():
     return sock, DefaultPlayer
 
 
+def connect_remote_players(num_players, sock, DefaultPlayer):
+    # connect remote players
+    for i in range(num_players):
+        sock.listen(10)
+        accept_socket, address = sock.accept()
+        new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
+        try:
+            new_player_name = new_player.register()
+            print("registering new player:", new_player_name)
+            if new_player_name == GONE_CRAZY:
+                print("remote player gone crazy, replacing it")
+                new_player, new_player_name = create_default_player(DefaultPlayer, cheater=False)
+        except socket.error:
+            print("remote player socket error, replacing it")
+            new_player, new_player_name = create_default_player(DefaultPlayer, cheater=False)
+        add_player_to_tournament(new_player, new_player_name, replacement=False)
+
+
+def add_default_players(num_players, DefaultPlayer):
+    # add extra default players if needed
+    while math.log2(num_players) % 1 != 0 or num_players == 1:
+        new_player, new_name = create_default_player(DefaultPlayer, cheater=False)
+        print("registering new default player")
+        add_player_to_tournament(new_player, new_name, replacement=False)
+        num_players += 1
+
+
 def flip_coin(player1, player2):
     arr = [player1, player2]
     return [arr[random.randint(0, 1)]]
@@ -48,7 +80,7 @@ def get_loser(player1, player2, winner):
     return player1
 
 
-def create_default_player(cheater):
+def create_default_player(DefaultPlayer, cheater):
     global curr_default_player_num
     if cheater:
         name = "replacement-default-player-" + str(curr_default_player_num)
@@ -69,10 +101,29 @@ def play_game(player, opponent, p_name, o_name):
     return winner, loser, illegal
 
 
-def update_league(winner, loser, illegal):
+def play_league(DefaultPlayer):
+    print("starting a league tournament...")
+    for i in range(len(player_list)):
+        for opponent in player_list[i + 1:]:
+            print(player_list)
+            winner, loser, illegal = play_game(players[player_list[i]], players[opponent], player_list[i], opponent)
+            update_league(winner, loser, illegal, DefaultPlayer)
+
+
+def play_cup():
+    print("starting a cup tournament...")
+    while len(player_list) > 1:
+        player1 = player_list[0]
+        player2 = player_list[1]
+        winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
+        update_cup(winner, loser, illegal)
+        player_list.remove(loser)
+
+
+def update_league(winner, loser, illegal, DefaultPlayer):
     if illegal:
         rankings[loser] = 0
-        default_player, name = create_default_player(cheater=True)
+        default_player, name = create_default_player(DefaultPlayer, cheater=True)
         # replace internal player name in player list
         player_list[player_list.index(loser)] = name
         # put the replacement player in all other data structures
@@ -110,74 +161,42 @@ def scores_to_rankings():
     return ranked_dict
 
 
-# get args from command line
-if sys.argv[1] == LEAGUE:
-    tournament_type = LEAGUE
-elif sys.argv[1] == CUP:
-    tournament_type = CUP
-else:
-    raise InvalidTournamentType("Invalid tournament type.")
+def main():
+    # get args from command line
+    if sys.argv[1] == LEAGUE:
+        tournament_type = LEAGUE
+    elif sys.argv[1] == CUP:
+        tournament_type = CUP
+    else:
+        raise InvalidTournamentType("Invalid tournament type.")
 
-num_players = int(sys.argv[2])
+    num_players = int(sys.argv[2])
 
-# create data structures for player data
-players = {}  # dictionary mapping player name to player objects
-rankings = {}  # mapping player names to scores
-beaten = {}  # mapping player names to names of players beaten
-player_list = []  # list of active players
+    # make socket
+    sock, DefaultPlayer = setup_from_config()
 
-# make socket
-sock, DefaultPlayer = setup_from_config()
+    # connect remote players
+    connect_remote_players(num_players, sock, DefaultPlayer)
 
-# connect remote players
-for i in range(num_players):
-    sock.listen(10)
-    accept_socket, address = sock.accept()
-    new_player = remote_player_wrapper.RemotePlayerWrapper(accept_socket)
-    try:
-        new_player_name = new_player.register()
-        print("registering new player:", new_player_name)
-        if new_player_name == GONE_CRAZY:
-            print("remote player gone crazy, replacing it")
-            new_player, new_player_name = create_default_player(cheater=False)
-    except socket.error:
-        print("remote player socket error, replacing it")
-        new_player, new_player_name = create_default_player(cheater=False)
-    add_player_to_tournament(new_player, new_player_name, replacement=False)
+    # add extra default players if needed
+    add_default_players(num_players, DefaultPlayer)
 
-num_remote = num_players
+    # play pair players as determined by tournament type
+    if tournament_type == LEAGUE:
+        play_league(DefaultPlayer)
 
-# add extra default players if needed
-while math.log2(num_players) % 1 != 0 or num_players == 1:
-    new_player, new_name = create_default_player(cheater=False)
-    print("registering new default player")
-    add_player_to_tournament(new_player, new_name, replacement=False)
-    num_players += 1
+    elif tournament_type == CUP:
+        play_cup()
 
-# play pair players as determined by tournament type
-if tournament_type == LEAGUE:
-    print("starting a league tournament...")
-    for i in range(len(player_list)):
-        for opponent in player_list[i+1:]:
-            print(player_list)
-            winner, loser, illegal = play_game(players[player_list[i]], players[opponent], player_list[i], opponent)
-            update_league(winner, loser, illegal)
-
-elif tournament_type == CUP:
-    print("starting a cup tournament...")
-    while len(player_list) > 1:
-        player1 = player_list[0]
-        player2 = player_list[1]
-        winner, loser, illegal = play_game(players[player1], players[player2], player1, player2)
-        update_cup(winner, loser, illegal)
-        player_list.remove(loser)
+    # stout the rankings dictionary
+    print("closing socket")
+    sock.close()
+    rank_dict = scores_to_rankings()
+    print("----------------")
+    print("Final Rankings:")
+    for key, val in rank_dict.items():
+        print(key, ": ", val)
 
 
-# stout the rankings dictionary
-print("closing socket")
-sock.close()
-rank_dict = scores_to_rankings()
-print("----------------")
-print("Final Rankings:")
-for key, val in rank_dict.items():
-    print(key, ": ", val)
+if __name__ == "__main__":
+    main()
