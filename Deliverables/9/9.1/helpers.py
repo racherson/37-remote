@@ -1,15 +1,44 @@
+'''
+CONSTANTS
+'''
+
 BOARD_SIZE = 9
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
 EMPTY_BOARD = [[EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
 PASS = "pass"
+BAD_HISTORY = "This history makes no sense!"
 GONE_CRAZY = "GO has gone crazy!"
 LEAGUE = "--league"
 CUP = "--cup"
 recv_size = 4096
 
+'''
+EXCEPTIONS
+'''
+class InvalidPoint(Exception):
+	pass
 
+
+class InvalidBoard(Exception):
+	pass
+
+
+class InvalidStone(Exception):
+	pass
+
+
+class InvalidMove(Exception):
+	pass
+
+
+class NoDataReceived(Exception):
+	pass
+
+
+class InvalidTournamentType(Exception):
+	pass
 
 
 '''
@@ -37,5 +66,10 @@ def is_board_empty(board):
 	return True
 
 
+'''
+IS_BOARD
+helper
+expects board, returns true if valid size, false otherwise
+'''
 def is_board(board):
 	return len(board) == BOARD_SIZE and len(board[0]) == BOARD_SIZE

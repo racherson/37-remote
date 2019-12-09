@@ -10,13 +10,13 @@ class DefaultPlayerWrapper:
 		self.player = Player1(name)
 
 	def reset_for_new_game(self):
-		self.register_flag = False
 		self.receive_flag = False
 
 	def register(self):
 		if self.register_flag:
 			return GONE_CRAZY
 		self.register_flag = True
+		print("registering a default player")
 		return self.player.register()
 
 	def receive_stones(self, stone):
