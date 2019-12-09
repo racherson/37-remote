@@ -12,8 +12,8 @@ BOARD_WRAP = BoardWrapper()
 
 class Player:
 
-	def __init__(self):
-		self.name = "no name"
+	def __init__(self, name):
+		self.name = name
 		self.color = EMPTY
 
 	def register(self):
@@ -21,6 +21,7 @@ class Player:
 
 	def receive_stones(self, stone):
 		self.set_color(stone)
+		return None
 
 	def set_color(self, color):
 		self.color = color
@@ -35,8 +36,7 @@ class Player:
 
 class Player1(Player):
 	def __init__(self, name):
-		super(Player1, self).__init__()
-		self.name = name
+		super(Player1, self).__init__(name)
 
 	def make_a_move(self, boards):
 		history_is_good = PLAY_WRAP.check_history(boards, self.color)
@@ -44,16 +44,15 @@ class Player1(Player):
 			for col in range(BOARD_SIZE):
 				for row in range(BOARD_SIZE):
 					if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)):
-						return [row, col]
-			return "pass"
-
-		return "This history makes no sense!"
+						return BOARD_WRAP.point_to_string([row, col])
+			return PASS
+		return BAD_HISTORY
 
 
 class Player2(Player):
 
-	def __init__(self):
-		super(Player2, self).__init__()
+	def __init__(self, name):
+		super(Player2, self).__init__(name)
 		self.n = None
 		with open('go-player.config') as config_file:
 			n = json.load(config_file)
@@ -62,12 +61,12 @@ class Player2(Player):
 	def make_a_move(self, boards):
 		history_is_good = PLAY_WRAP.check_history(boards, self.color)
 		if not history_is_good:
-			return "This history makes no sense!"
+			return BAD_HISTORY
 
 		if self.n == 1:
 			point = self.find_capture_point(boards)
 			if point:
-				return point
+				return BOARD_WRAP.point_to_string(point)
 			else:
 				return self.normal_move(boards)
 
@@ -75,25 +74,25 @@ class Player2(Player):
 		for col in range(BOARD_SIZE):
 			for row in range(BOARD_SIZE):
 				if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)) and PLAY_WRAP.is_capture_move(self.color, [row, col], copy.deepcopy(boards[0])):
-					return [row, col]
+					return BOARD_WRAP.point_to_string([row, col])
 		return False
 
 	def normal_move(self, boards):
 		for col in range(BOARD_SIZE):
 			for row in range(BOARD_SIZE):
 				if PLAY_WRAP.play(self.color, [row, col], boards):
-					return [row, col]
-		return "pass"
+					return BOARD_WRAP.point_to_string([row, col])
+		return PASS
 
 
 class Player3(Player):
 
-	def __init__(self):
-		super(Player3, self).__init__()
+	def __init__(self, name):
+		super(Player3, self).__init__(name)
 
 	def make_a_move(self, boards):
 		row = random.randint(0, BOARD_SIZE)
 		if row == BOARD_SIZE:
 			return PASS
 		col = random.randint(0, BOARD_SIZE - 1)
-		return [row, col]
+		return BOARD_WRAP.point_to_string([row, col])
