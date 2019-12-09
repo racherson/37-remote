@@ -2,12 +2,13 @@
 CONSTANTS
 '''
 
-BOARD_SIZE = 9
+BOARD_SIZE = 3
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
 EMPTY_BOARD = [[EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
 PASS = "pass"
+BAD_HISTORY = "This history makes no sense!"
 GONE_CRAZY = "GO has gone crazy!"
 LEAGUE = "--league"
 CUP = "--cup"
