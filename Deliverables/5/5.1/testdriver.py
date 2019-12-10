@@ -2,10 +2,11 @@ import sys
 import json
 from json import JSONDecoder, JSONDecodeError
 import re
+from player_wrapper import Player_Wrapper
 import play_wrapper
-from game import Game
 
 play_wrap = play_wrapper.PlayWrapper()
+p1 = Player_Wrapper("no name")
 NOT_WHITESPACE = re.compile(r'[^\s]')
 
 def point_to_string(point):
@@ -30,18 +31,17 @@ for line in sys.stdin:
 
 ls = []
 
-gameplay = Game()
 
 for line in decode_stacked(s):
     if len(line) == 1:
         if line[0] == "register":
-            ls.append(gameplay.register())
+            ls.append(p1.register())
             continue
     elif len(line) == 2:
         if line[0] == "receive-stones":
-            gameplay.receive_stones(line[1])
+            p1.receive_stones(line[1])
         elif line[0] == "make-a-move":
-            output = gameplay.make_a_move(line[1])
+            output = p1.make_a_move(line[1])
             if len(output) == 2:
                 ls.append(point_to_string(output))
             else:

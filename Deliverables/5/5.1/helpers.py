@@ -2,7 +2,7 @@
 CONSTANTS
 '''
 
-BOARD_SIZE = 9
+BOARD_SIZE = 19
 WHITE = 'W'
 BLACK = 'B'
 EMPTY = ' '
