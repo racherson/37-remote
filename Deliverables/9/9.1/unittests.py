@@ -53,12 +53,12 @@ class Test_Board(unittest.TestCase):
 		self.assertEqual(b.occupied(board, "1-1"), True)
 		self.assertEqual(b.occupied(board, [2, 2]), False)
 		self.assertEqual(b.occupied(board, "3-3"), False)
-		self.assertRaises(InvalidPoint, b.occupied, board, "5-5")
+		self.assertRaises(InvalidPoint, b.occupied, board, "5_original-5_original")
 
 	def test_occupies(self):
 		self.assertEqual(b.occupies(board, BLACK, "1-1"), True)
 		self.assertEqual(b.occupies(board, BLACK, [0,0]), True)
-		self.assertRaises(InvalidPoint, b.occupies, board, BLACK, "5,5")
+		self.assertRaises(InvalidPoint, b.occupies, board, BLACK, "5_original,5_original")
 		self.assertRaises(InvalidBoard, b.occupies, [1], BLACK, "1-1")
 		self.assertRaises(InvalidStone, b.occupies, board, "black", "1-1")
 

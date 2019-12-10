@@ -3,102 +3,96 @@ from play_wrapper import PlayWrapper
 from board_wrapper import BoardWrapper
 from abc import abstractmethod
 import copy
+import json
+import random
 
 PLAY_WRAP = PlayWrapper()
 BOARD_WRAP = BoardWrapper()
 
+
 class Player:
 
-	name = "no name"
-	color = EMPTY
-
-	def __init__(self):
-		name = "no name"
-		color = EMPTY
-
-	def set_name(self,name):
+	def __init__(self, name):
 		self.name = name
+		self.color = EMPTY
 
-	def get_name(self):
+	def register(self):
 		return self.name
 
-	def set_color(self,color):
+	def receive_stones(self, stone):
+		self.set_color(stone)
+		return None
+
+	def set_color(self, color):
 		self.color = color
 
 	def get_color(self):
 		return self.color
 
 	@abstractmethod
-	def make_a_move(self,boards):
+	def make_a_move(self, boards):
 		pass
 
 
 class Player1(Player):
-	def __init__(self):
-		super(Player1, self).__init__()
+	def __init__(self, name):
+		super(Player1, self).__init__(name)
 
-	def make_a_move(self,boards):
-		history_is_good = PLAY_WRAP.check_history(boards,self.color)
+	def make_a_move(self, boards):
+		history_is_good = PLAY_WRAP.check_history(boards, self.color)
 		if history_is_good:
 			for col in range(BOARD_SIZE):
 				for row in range(BOARD_SIZE):
-					if PLAY_WRAP.play(self.color,[row,col],copy.deepcopy(boards)):
-						return [row,col]
-			return "pass"
+					if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)):
+						return BOARD_WRAP.point_to_string([row, col])
+			return PASS
+		return BAD_HISTORY
 
-		return "This history makes no sense!"
 
 class Player2(Player):
 
-	n = 1
+	def __init__(self, name):
+		super(Player2, self).__init__(name)
+		self.n = None
+		with open('go-player.config') as config_file:
+			n = json.load(config_file)
+		self.n = n["depth"]
 
-	def __init__(self, n = 1):
-		super(Player2, self).__init__()
-		self.n = n
-
-	def make_a_move(self,boards):
-		history_is_good = PLAY_WRAP.check_history(boards,self.color)
-		print(history_is_good)
+	def make_a_move(self, boards):
+		history_is_good = PLAY_WRAP.check_history(boards, self.color)
 		if not history_is_good:
-			return "This history makes no sense!"
-
-
+			return BAD_HISTORY
 
 		if self.n == 1:
 			point = self.find_capture_point(boards)
 			if point:
-				return point
+				return BOARD_WRAP.point_to_string(point)
 			else:
 				return self.normal_move(boards)
-		#Need to do this for n == 2 and n == 3 or abstract is somehow
-		#Hard to do without it being SUPER slow
-		#A lot of repeated work being done which we could change but need to update paly.py
 
-
-	def find_capture_point(self,boards):
+	def find_capture_point(self, boards):
 		for col in range(BOARD_SIZE):
 			for row in range(BOARD_SIZE):
-				if PLAY_WRAP.play(self.color,[row,col],copy.deepcopy(boards)) and PLAY_WRAP.is_capture_move(self.color,[row,col],copy.deepcopy(boards[0])):
-					return [row,col]
+				if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)) and PLAY_WRAP.is_capture_move(self.color, [row, col], copy.deepcopy(boards[0])):
+					return BOARD_WRAP.point_to_string([row, col])
 		return False
 
-	def normal_move(self,boards):
+	def normal_move(self, boards):
 		for col in range(BOARD_SIZE):
 			for row in range(BOARD_SIZE):
-				if PLAY_WRAP.play(self.color,[row,col],boards):
-					return [row,col]
-		return "pass"
+				if PLAY_WRAP.play(self.color, [row, col], boards):
+					return BOARD_WRAP.point_to_string([row, col])
+		return PASS
 
 
+class Player3(Player):
 
+	def __init__(self, name):
+		super(Player3, self).__init__(name)
 
-
-
-	
-
-
-
-
-
-
-
+	def make_a_move(self, boards):
+		row = random.randint(0, BOARD_SIZE)
+		if row == BOARD_SIZE:
+			return PASS
+		col = random.randint(0, BOARD_SIZE - 1)
+		return BOARD_WRAP.point_to_string([row, col])

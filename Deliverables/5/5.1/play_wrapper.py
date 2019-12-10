@@ -1,5 +1,6 @@
-#wrapper class for Play
+# wrapper class for Play
 import play
+
 
 class PlayWrapper:
 
@@ -7,19 +8,22 @@ class PlayWrapper:
 		pass
 
 	def action(self, act):
-		return play.action(act)
+		try:
+			return play.action(act)
+		except:
+			return
 
 	def score(self, board):
 		return play.score(board)
 
-	def check_history(self,boards,stone):
-		return play.check_history(boards,stone)
+	def check_history(self, boards, stone):
+		return play.check_history(boards, stone)
 
-	def play(self,stone,point,boards):
-		return play.play(stone,point,boards)
+	def play(self, stone, point, boards):
+		return play.play(stone, point, boards)
 
-	def is_capture_move(self,stone,point,board):
-		return play.is_capture_move(stone,point,board)
+	def is_capture_move(self, stone, point, board):
+		return play.is_capture_move(stone, point, board)
 
-	def get_next_board(self,stone,point,board):
-		return play.get_next_board(strone,point,board)
+	def get_next_board(self, stone, point, board):
+		return play.get_next_board(stone, point, board)
