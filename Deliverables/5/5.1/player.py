@@ -44,7 +44,7 @@ class Player1(Player):
 			for col in range(BOARD_SIZE):
 				for row in range(BOARD_SIZE):
 					if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)):
-						return BOARD_WRAP.point_to_string([row, col])
+						return BOARD_WRAP.point_to_string([col, row])
 			return PASS
 		return BAD_HISTORY
 
@@ -74,14 +74,14 @@ class Player2(Player):
 		for col in range(BOARD_SIZE):
 			for row in range(BOARD_SIZE):
 				if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)) and PLAY_WRAP.is_capture_move(self.color, [row, col], copy.deepcopy(boards[0])):
-					return BOARD_WRAP.point_to_string([row, col])
+					return BOARD_WRAP.point_to_string([col, row])
 		return False
 
 	def normal_move(self, boards):
 		for col in range(BOARD_SIZE):
 			for row in range(BOARD_SIZE):
 				if PLAY_WRAP.play(self.color, [row, col], boards):
-					return BOARD_WRAP.point_to_string([row, col])
+					return BOARD_WRAP.point_to_string([col, row])
 		return PASS
 
 
@@ -95,4 +95,4 @@ class Player3(Player):
 		if row == BOARD_SIZE:
 			return PASS
 		col = random.randint(0, BOARD_SIZE - 1)
-		return BOARD_WRAP.point_to_string([row, col])
+		return BOARD_WRAP.point_to_string([col, row])
