@@ -1,24 +1,33 @@
 import json
 import sys
-import importlib
-from helpers import *
-import remote_player_wrapper
-import math
-import admin
 import random
 import socket
+import importlib
+import math
+import admin
+from helpers import *
+import remote_player_wrapper
+
+
 '''
 TOURNAMENT ADMINISTRATOR
-expects configuration of tournament type (--league or --cup), number of players
+expects configuration of tournament type, number of players
 
-This component is the entry point into the whole GO tournament.
-It receives the tournament type and number of remote players expected to connect
-It opens a socket and waits for all the remote players to connect to it,
-adding each one to the tournament
-It completes the tournament by adding default players to bring the number of players up to the next power of 2
-Based on tournament type, this component schedules the proper tournament and
-gives players to the game admin for each scheduled game
-The component then prints out the final rankings based on the tournament results
+tournament types:
+--league
+--cup
+
+number of players: int
+
+----------------------------------------------------------
+This component is a server that accepts connections from
+remote players and fills up a tournament with default
+players.
+
+It then schedules games based on tournament type
+and updates rankings based on each game's results
+
+It finally prints out final rankings
 '''
 
 
@@ -48,6 +57,7 @@ ADD_PLAYER_TO_TOURNAMENT
 expects player, player name, Bool
 '''
 def add_player_to_tournament(player, name, replacement):
+    # adds a player to the tournament data structures
     players[name] = player
     rankings[name] = 0
     beaten[name] = []
@@ -75,7 +85,7 @@ CONNECT_REMOTE_PLAYER
 expects a number, socket, default player class
 '''
 def connect_remote_players(num_players, sock, DefaultPlayer):
-    # connect remote players
+    # accept connections for all expected remote players, registers each for tournament
     for i in range(num_players):
         sock.listen(10)
         accept_socket, address = sock.accept()
@@ -189,6 +199,7 @@ UPDATE_LEAGUE
 expects player name, player name, bool, default player class
 '''
 def update_league(winner, loser, illegal, DefaultPlayer):
+    # update data structures based on results
     if illegal:
         rankings[loser] = 0
         default_player, name = create_default_player(DefaultPlayer, cheater=True)
@@ -211,6 +222,7 @@ UPDATE_CUP
 expects player name, player name, bool
 '''
 def update_cup(winner, loser, illegal):
+    # update data structures based on results
     if illegal:
         rankings[loser] = 0
     rankings[winner[0]] += 1
