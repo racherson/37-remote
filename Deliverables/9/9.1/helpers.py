@@ -41,6 +41,10 @@ class InvalidTournamentType(Exception):
 	pass
 
 
+class InvalidPlayer(Exception):
+	pass
+
+
 '''
 GET_OPPONENT
 helper

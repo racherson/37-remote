@@ -7,8 +7,24 @@ import math
 import admin
 import random
 import socket
+'''
+TOURNAMENT ADMINISTRATOR
+expects configuration of tournament type (--league or --cup), number of players
+
+This component is the entry point into the whole GO tournament.
+It receives the tournament type and number of remote players expected to connect
+It opens a socket and waits for all the remote players to connect to it,
+adding each one to the tournament
+It completes the tournament by adding default players to bring the number of players up to the next power of 2
+Based on tournament type, this component schedules the proper tournament and
+gives players to the game admin for each scheduled game
+The component then prints out the final rankings based on the tournament results
+'''
 
 
+'''
+DATA STRUCTURES
+'''
 curr_default_player_num = 0
 # create data structures for player data
 players = {}  # dictionary mapping player name to player objects
@@ -17,12 +33,20 @@ beaten = {}  # mapping player names to names of players beaten
 player_list = []  # list of active players
 
 
+'''
+GET_CONFIG
+Returns python dictionary of config data
+'''
 def get_config():
     with open('go.config') as config_file:
         config_data = json.load(config_file)
     return config_data
 
 
+'''
+ADD_PLAYER_TO_TOURNAMENT
+expects player, player name, Bool
+'''
 def add_player_to_tournament(player, name, replacement):
     players[name] = player
     rankings[name] = 0
@@ -31,6 +55,10 @@ def add_player_to_tournament(player, name, replacement):
         player_list.append(name)
 
 
+'''
+SETUP_FROM_CONFIG
+returns a socket and default player class
+'''
 def setup_from_config():
     config_data = get_config()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -42,6 +70,10 @@ def setup_from_config():
     return sock, DefaultPlayer
 
 
+'''
+CONNECT_REMOTE_PLAYER
+expects a number, socket, default player class
+'''
 def connect_remote_players(num_players, sock, DefaultPlayer):
     # connect remote players
     for i in range(num_players):
@@ -60,6 +92,10 @@ def connect_remote_players(num_players, sock, DefaultPlayer):
         add_player_to_tournament(new_player, new_player_name, replacement=False)
 
 
+'''
+ADD_DEFAULT_PLAYERS
+expects a number, default player class
+'''
 def add_default_players(num_players, DefaultPlayer):
     # add extra default players if needed
     while math.log2(num_players) % 1 != 0 or num_players == 1:
@@ -69,17 +105,35 @@ def add_default_players(num_players, DefaultPlayer):
         num_players += 1
 
 
+'''
+FLIP_COIN
+expects player name, player name
+returns player name
+'''
 def flip_coin(player1, player2):
     arr = [player1, player2]
     return [arr[random.randint(0, 1)]]
 
 
+'''
+GET_LOSER
+expects player name, player name, player name
+returns player name
+'''
 def get_loser(player1, player2, winner):
     if winner == player1:
         return player2
-    return player1
+    elif winner == player2:
+        return player1
+    else:
+        raise InvalidPlayer("Player not in game")
 
 
+'''
+CREATE_DEFAULT_PLAYER
+expects default player class, bool
+returns instance of default player, name
+'''
 def create_default_player(DefaultPlayer, cheater):
     global curr_default_player_num
     if cheater:
@@ -92,15 +146,23 @@ def create_default_player(DefaultPlayer, cheater):
     return default_player, name
 
 
-# give players to admin to play a game
+'''
+PLAY_GAME
+expects player, player, player name, player name
+returns [player name], player name, bool
+'''
 def play_game(player, opponent, p_name, o_name):
+    # give players to admin to play a game
     winner, illegal = admin.administrate(player, opponent, p_name, o_name)
     if len(winner) == 2:
         winner = flip_coin(p_name, o_name)
     loser = get_loser(p_name, o_name, winner[0])
     return winner, loser, illegal
 
-
+'''
+PLAY_LEAGUE
+expects default player class
+'''
 def play_league(DefaultPlayer):
     print("starting a league tournament...")
     for i in range(len(player_list)):
@@ -110,6 +172,9 @@ def play_league(DefaultPlayer):
             update_league(winner, loser, illegal, DefaultPlayer)
 
 
+'''
+PLAY_CUP
+'''
 def play_cup():
     print("starting a cup tournament...")
     while len(player_list) > 1:
@@ -119,7 +184,10 @@ def play_cup():
         update_cup(winner, loser, illegal)
         player_list.remove(loser)
 
-
+'''
+UPDATE_LEAGUE
+expects player name, player name, bool, default player class
+'''
 def update_league(winner, loser, illegal, DefaultPlayer):
     if illegal:
         rankings[loser] = 0
@@ -138,12 +206,20 @@ def update_league(winner, loser, illegal, DefaultPlayer):
     rankings[winner[0]] += 1
 
 
+'''
+UPDATE_CUP
+expects player name, player name, bool
+'''
 def update_cup(winner, loser, illegal):
     if illegal:
         rankings[loser] = 0
     rankings[winner[0]] += 1
 
 
+'''
+SCORES_TO_RANKINGS
+returns dict
+'''
 def scores_to_rankings():
     sorted_by_value = sorted(rankings, key=lambda x: rankings[x], reverse=True)
     rank = 1

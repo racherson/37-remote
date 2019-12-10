@@ -103,13 +103,13 @@ class BoardWrapper:
 	def check_board(self, board):
 		# check number of rows
 		if len(board) != BOARD_SIZE:
-			raise InvalidBoard('Board must contain 19 rows.')
+			raise InvalidBoard('Board must contain ' + str(BOARD_SIZE) + ' rows.')
 
 		# check length of all rows (because python is fake)
 		# check board only has valid stones, maybestones
 		for row in board:
 			if len(row) != BOARD_SIZE:
-				raise InvalidBoard('Board must be 19 columns wide.')
+				raise InvalidBoard('Board must contain ' + str(BOARD_SIZE) + ' rows.')
 			for item in row:
 				if item != EMPTY and item != BLACK and item != WHITE:
 					raise InvalidBoard('Board contains invalid stones.')
