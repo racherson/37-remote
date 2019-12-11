@@ -43,7 +43,8 @@ class Player1(Player):
 		if history_is_good:
 			for col in range(BOARD_SIZE):
 				for row in range(BOARD_SIZE):
-					if PLAY_WRAP.play(self.color, [row, col], copy.deepcopy(boards)):
+					c = copy.deepcopy(boards)
+					if PLAY_WRAP.play(self.color, [row, col], c):
 						return BOARD_WRAP.point_to_string([col, row])
 			return PASS
 		return BAD_HISTORY
