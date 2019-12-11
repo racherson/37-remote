@@ -3,6 +3,12 @@ from helpers import *
 from board_wrapper import BoardWrapper
 from player_wrapper import Player_Wrapper
 from tournament_admin import *
+from play import *
+from referee import *
+
+#########################################
+##CHANGE BOARD SIZE TO 3 BEFORE RUNNING##
+#########################################
 
 b = BoardWrapper()
 board = [
@@ -17,6 +23,8 @@ boards = [
 
 r = "rachel"
 s = "sarah"
+
+print(EMPTY_BOARD)
 
 
 class Test_Player(unittest.TestCase):
@@ -88,6 +96,103 @@ class Test_Board(unittest.TestCase):
 	def test_get_points(self):
 		self.assertEqual(b.get_points(board, EMPTY), ["3-3"])
 		self.assertEqual(b.get_points(board, WHITE), ["2-1", "2-2", "2-3"])
+
+class Test_Rule_Checker(unittest.TestCase):
+	def test_pass(self):
+		self.assertEqual(action([BLACK, PASS]), True)
+		self.assertEqual(action([WHITE, PASS]), True)
+
+	#in turn tests check_alternating and check_turn
+	def test_check_history(self):
+		self.assertEqual(check_history([EMPTY_BOARD], BLACK), True)#empty board
+		self.assertEqual(check_history([EMPTY_BOARD], WHITE), False)#empty board
+		next_board = [
+			[EMPTY, EMPTY, EMPTY],
+			[EMPTY, EMPTY, EMPTY],
+			[EMPTY, EMPTY, BLACK]
+		]
+
+		self.assertEqual(check_history([next_board, EMPTY_BOARD], WHITE), True) #2 boards
+		self.assertEqual(check_history([next_board, EMPTY_BOARD], BLACK), False) #2 boards
+
+		alternating_boards = [
+			[
+				[EMPTY, EMPTY, WHITE],
+				[EMPTY, EMPTY, EMPTY],
+				[EMPTY, EMPTY, BLACK]
+			],
+			next_board,
+			EMPTY_BOARD
+		]
+
+		self.assertEqual(check_history(alternating_boards, BLACK), True) #alternating black's turn
+		self.assertEqual(check_history(alternating_boards, WHITE), False) #alternating black's turn
+
+		alternating_boards.reverse()
+		self.assertEqual(check_history(alternating_boards, BLACK), False) #bad board order
+		self.assertEqual(check_history(alternating_boards, WHITE), False) #bad board order
+
+		alternating_boards = [
+			[
+				[EMPTY, EMPTY, WHITE],
+				[EMPTY, EMPTY, BLACK],
+				[EMPTY, EMPTY, BLACK]
+			],
+			[
+				[EMPTY, EMPTY, WHITE],
+				[EMPTY, EMPTY, EMPTY],
+				[EMPTY, EMPTY, BLACK]
+			],
+			next_board
+		]
+
+		self.assertEqual(check_history(alternating_boards, BLACK), False) #alternating white's turn
+		self.assertEqual(check_history(alternating_boards, WHITE), True) #alternating white's turn
+
+		alternating_boards[0][1][2] = WHITE #change alternating pattern
+		self.assertEqual(check_history(alternating_boards, BLACK), False) #not alternating
+		self.assertEqual(check_history(alternating_boards, WHITE), False) #not alternating
+		alternating_boards[0][1][2] = EMPTY #change back to prev board
+		alternating_boards[0][0][2] = BLACK #black overwrites white on its turn
+		self.assertEqual(check_history(alternating_boards, BLACK), False)
+		self.assertEqual(check_history(alternating_boards, WHITE), False)
+
+
+		self.assertEqual(check_history(boards,BLACK), False) #two passes
+		self.assertEqual(check_history(boards,WHITE), False) #two passes
+		boards1 = [board]
+		self.assertEqual(check_history(boards1,BLACK), False) #invalid first board
+		self.assertEqual(check_history(boards1,BLACK), False) #invalid first board
+		boards2 = [[
+			[BLACK, WHITE, BLACK],
+			[BLACK, WHITE, BLACK],
+			[BLACK, WHITE, BLACK]
+		], board]
+		self.assertEqual(check_history(boards2, BLACK), False) #invalid 2 boards
+		self.assertEqual(check_history(boards2, WHITE), False) #invalid 2 boards
+
+	def test_get_caputured(self):
+		b = [
+			[WHITE, BLACK, BLACK],
+			[WHITE, BLACK, BLACK],
+			[BLACK, BLACK, EMPTY]
+		]
+		c = get_captured(b)
+		self.assertEqual([0,0] in c, True)
+		self.assertEqual([1,0] in c, True)
+		self.assertEqual(len(c), 2)
+
+	def test_is_suicide(self):
+		b = [
+			[WHITE, BLACK, BLACK],
+			[WHITE, BLACK, BLACK],
+			[BLACK, BLACK, EMPTY]
+		]
+		self.assertEqual(is_suicide(b, BLACK), False)
+		self.assertEqual(is_suicide(b, WHITE), True)
+
+# class Test_Referee(unittest.TestCase):
+# 	r = Referee()
 
 
 class Test_Tournament(unittest.TestCase):
