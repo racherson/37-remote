@@ -108,7 +108,7 @@ expects a number, default player class
 '''
 def add_default_players(num_players, DefaultPlayer):
     # add extra default players if needed
-    while math.log2(num_players) % 1 != 0 or num_players == 1:
+    while num_players == 0 or math.log2(num_players) % 1 != 0 or num_players == 1:
         new_player, new_name = create_default_player(DefaultPlayer, cheater=False)
         print("registering new default player")
         add_player_to_tournament(new_player, new_name, replacement=False)
@@ -249,16 +249,16 @@ def scores_to_rankings():
     return ranked_dict
 
 
-def main():
+def main(tourney_arg, num_arg):
     # get args from command line
-    if sys.argv[1] == LEAGUE:
+    if tourney_arg == LEAGUE:
         tournament_type = LEAGUE
-    elif sys.argv[1] == CUP:
+    elif tourney_arg == CUP:
         tournament_type = CUP
     else:
         raise InvalidTournamentType("Invalid tournament type.")
 
-    num_players = int(sys.argv[2])
+    num_players = int(num_arg)
 
     # make socket
     sock, DefaultPlayer = setup_from_config()
@@ -284,7 +284,8 @@ def main():
     print("Final Rankings:")
     for key, val in rank_dict.items():
         print(key, ": ", val)
+    print("\n")
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1], sys.argv[2])
