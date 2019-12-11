@@ -10,6 +10,7 @@ class Player_Wrapper:
 		self.player = Player1(name)
 
 	def reset_for_new_game(self):
+		self.register_flag = False
 		self.receive_flag = False
 
 	def register(self):
